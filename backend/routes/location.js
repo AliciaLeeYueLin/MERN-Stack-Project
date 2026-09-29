@@ -43,6 +43,19 @@ router.post("/location/bulk", auth.authenticate, async(req, res) => {
     }
 })
 
+router.patch("/location/:id", auth.authenticate, async(req, res) => {
+    try{
+        const updateLocation = await Location.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {new: true}
+        )
+
+        res.json(updateLocation)
+    }catch(error){
+        res.status(400).json({error:error.message})
+    }
+})
 router.delete("/location/:id", auth.authenticate, async(req, res)=> {
     try {  const deletedLocation = await Location.findByIdAndDelete(req.params.id);
 

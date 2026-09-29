@@ -3,8 +3,21 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Sighting = require("../models/Sighting");
 
-
 router.use(express.json());
+
+router.get("/sightings", auth.authenticate, async (req, res) => {
+    try {
+        const allSighting = await Sighting.find({})
+            .populate("sharkId")
+            .populate("locationId");
+
+        res.json(allSighting);
+    } catch (error) {
+        res.status(500).json({
+            error: error.message,
+        });
+    }
+});
 
 router.post("/sighting", async (req, res) => {
     try {
@@ -12,7 +25,7 @@ router.post("/sighting", async (req, res) => {
 
         const newSighting = new Sighting({
             sharkId,
-            locationId
+            locationId,
         });
 
         const savedSighting = await newSighting.save();
@@ -20,7 +33,7 @@ router.post("/sighting", async (req, res) => {
         res.status(201).json(savedSighting);
     } catch (error) {
         res.status(400).json({
-            error: error.message
+            error: error.message,
         });
     }
 });
@@ -32,25 +45,24 @@ router.post("/bulk", auth.authenticate, async (req, res) => {
         res.status(201).json(sightings);
     } catch (error) {
         res.status(400).json({
-            error: error.message
+            error: error.message,
         });
     }
 });
 
 router.get("/frequency", auth.authenticate, async (req, res) => {
     try {
-
         const frequency = await Sighting.aggregate([
             {
                 $group: {
                     _id: {
                         sharkId: "$sharkId",
-                        locationId: "$locationId"
+                        locationId: "$locationId",
                     },
                     frequency: {
-                        $sum: 1
-                    }
-                }
+                        $sum: 1,
+                    },
+                },
             },
 
             {
@@ -58,8 +70,8 @@ router.get("/frequency", auth.authenticate, async (req, res) => {
                     from: "sharks",
                     localField: "_id.sharkId",
                     foreignField: "_id",
-                    as: "shark"
-                }
+                    as: "shark",
+                },
             },
 
             {
@@ -67,16 +79,16 @@ router.get("/frequency", auth.authenticate, async (req, res) => {
                     from: "locations",
                     localField: "_id.locationId",
                     foreignField: "_id",
-                    as: "location"
-                }
+                    as: "location",
+                },
             },
 
             {
-                $unwind: "$shark"
+                $unwind: "$shark",
             },
 
             {
-                $unwind: "$location"
+                $unwind: "$location",
             },
 
             {
@@ -86,16 +98,33 @@ router.get("/frequency", auth.authenticate, async (req, res) => {
                     sharkName: "$shark.name",
                     locationId: "$location._id",
                     locationName: "$location.name",
-                    frequency: 1
-                }
-            }
+                    frequency: 1,
+                },
+            },
         ]);
 
         res.json(frequency);
-
     } catch (error) {
         res.status(400).json({
-            error: error.message
+            error: error.message,
+        });
+    }
+});
+
+router.delete("/sighting", auth.authenticate, async (req, res) => {
+    try {
+        const deleteSighting = await Sighting.deleteMany({});
+
+        if (!deleteSighting) {
+            return res.status(404).json({
+                error: "sighting not found",
+            });
+        }
+
+        res.json(deleteSighting);
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
         });
     }
 });

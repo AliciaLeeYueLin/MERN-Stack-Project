@@ -4,12 +4,15 @@ import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserInfo from "../component/userInfo";
+import ResearcherForm from "../component/researcherForm";
+
 
 const Navigation = () => {
     const [error, setError] = useState("");
 
     const [users, setUsers] = useState(null);
     const [user, setUser] = useState({});
+    const [isUser, setIsUser] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false);
     const [showUserInfo, setShowUserInfo] = useState(false);
 
@@ -34,6 +37,9 @@ const Navigation = () => {
                 if (response.data.role === "admin") {
                     setIsAdmin(true);
                 }
+                if (response.data.role === "user") {
+                    setIsUser(true)
+                }
 
                 setUser(response.data);
             } catch (error) {
@@ -51,7 +57,7 @@ const Navigation = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("jwt_token");
-        navigate("/");
+        navigate("/login");
     };
 
     const openInfo = async () => {
@@ -113,6 +119,7 @@ const Navigation = () => {
                         {showUserInfo && (
                             <div className="user-info-box">
                                 <UserInfo onClose={handleClose} />
+                                 {isUser && <ResearcherForm onClose={handleClose} />}
                             </div>
                         )}
                     </li>

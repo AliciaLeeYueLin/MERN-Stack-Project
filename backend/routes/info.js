@@ -2,19 +2,22 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const Info = require("../models/Info");
+const multer = require("multer");
+
+const upload = multer({
+    dest: "uploads/",
+});
 
 router.use(express.json());
 
 router.get("/info", auth.authenticate, async (req, res) => {
     try {
-        const getAllInfo = await Info.find({})
-            .populate("userId", "name")
-            .populate("sharkId", "name");
+        const getAllInfo = await Info.find({}).populate("userId", "name").populate("sharkId", "name");
 
         res.json(getAllInfo);
     } catch (error) {
         res.status(404).json({
-            error: error.message
+            error: error.message,
         });
     }
 });
@@ -63,15 +66,18 @@ router.post("/info/bulk", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/info/:id", auth.authenticate, async (req, res) => {
+router.patch("/info/:id", auth.authenticate, upload.single("image"), async (req, res) => {
     try {
-      const updateInfo = await Info.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-)
-.populate("userId", "name _id")
-.populate("sharkId", "name _id");
+        const updateData = {
+            ...req.body,
+        };
+
+        if (req.file) {
+            updateData.imageUrl = `/uploads/${req.file.filename}`;
+        }
+
+        const updateInfo = await Info.findByIdAndUpdate(req.params.id, updateData, { new: true }).populate("userId", "name _id").populate("sharkId", "name _id");
+
         if (!updateInfo) {
             return res.status(404).json({
                 error: "Info not found",

@@ -1,5 +1,4 @@
 import UserInfo from "../component/userInfo";
-import ResearcherForm from "../component/researcherForm";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -248,9 +247,8 @@ function Home() {
                         </div>
                     </div>
                 </section>
-                <button onClick={openInfo}>{users?.name}</button>
-                {showUserInfo && <UserInfo onClose={handleClose} />}
-                {isUser && <ResearcherForm onClose={handleClose} />}
+             
+               
             </div>
         </>
     );

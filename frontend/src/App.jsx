@@ -5,6 +5,7 @@ import Home from "./pages/home"
 import Shark from "./pages/shark";
 import Location from "./pages/location";
 import Info from "./pages/info"
+import Sighting from "./pages/sighting"
 import ProtectedRoute from "./component/protectedRoutes";
 import "./App.css";
 import NewLocation from "./component/newLocation";
@@ -12,6 +13,7 @@ import NewShark from "./component/newShark"
 import EditShark from "./component/editShark";
 import Approve from "./component/approve"
 import NewInfo from "./component/newInfo"
+
 
 function App() {
     return (
@@ -30,6 +32,7 @@ function App() {
                     <Route path="/request" element={<Approve/>} />
                     <Route path="/info" element={<Info/>} />
                     <Route path="/info/add" element={<NewInfo/>} />
+                    <Route path="/sighting" element={<Sighting/>} />
                 </Route>
             </Routes>
         </BrowserRouter>

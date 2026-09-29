@@ -70,49 +70,6 @@ function Info() {
         getInfo();
     }, [navigate]);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-
-        setSharks({
-            ...sharks,
-            [name]: type === "checkbox" ? checked : value,
-        });
-    };
-
-    const handleAdd = async (e) => {
-        e.preventDefault();
-
-        const token = localStorage.getItem("jwt_token");
-
-        if (!token || token.trim() === "") {
-            localStorage.removeItem("jwt_token");
-            navigate("/");
-            return;
-        }
-
-        try {
-            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/info/info/`, sharks, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            setMessage("Info added successfully.");
-
-            setTimeout(() => {
-                navigate("/info");
-            }, 1000);
-        } catch (error) {
-            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                localStorage.removeItem("jwt_token");
-                navigate("/");
-                return;
-            }
-
-            setError("Failed to add info.");
-        }
-    };
-
     const handleCancel = () => {
         navigate("/sharks");
     };
@@ -121,41 +78,89 @@ function Info() {
         setInfo((oldInfo) => oldInfo.map((i) => (i._id === updatedInfo._id ? updatedInfo : i)));
     };
 
-   
+    const resizeGridItem = (item) => {
+        const grid = document.querySelector(".info-grid");
 
+        const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue("grid-auto-rows"));
+
+        const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue("gap"));
+
+        const content = item.querySelector(".info-card");
+
+        if (!content) return;
+
+        const rowSpan = Math.ceil((content.getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
+
+        item.style.gridRowEnd = `span ${rowSpan}`;
+    };
+
+    const resizeAllGridItems = () => {
+        const allItems = document.querySelectorAll(".info-grid .content");
+
+        allItems.forEach((item) => {
+            resizeGridItem(item);
+        });
+    };
+
+    useEffect(() => {
+        if (info.length === 0) return;
+
+        resizeAllGridItems();
+
+        const images = document.querySelectorAll(".info-grid img");
+
+        images.forEach((image) => {
+            image.addEventListener("load", resizeAllGridItems);
+        });
+
+        window.addEventListener("resize", resizeAllGridItems);
+
+        return () => {
+            window.removeEventListener("resize", resizeAllGridItems);
+
+            images.forEach((image) => {
+                image.removeEventListener("load", resizeAllGridItems);
+            });
+        };
+    }, [info]);
     return (
-        <div className="products-container">
-            <div className="products-header">
-                <h1>Shark</h1>
+        <div className="info-container">
+            <div className="info-header">
+                <h1>Info</h1>
                 <div className="btn">
                     {isResearcher && (
                         <button className="add" onClick={() => navigate(`/info/add/`)}>
                             +
                         </button>
                     )}
-
-                   
                 </div>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <div className="shark-grid">
+            <div className="info-grid">
                 {info.map((i) => (
-                    <div className="shark-card" key={i._id}>
-                        <h2>Researcher: {i.userId?.name}</h2>
+                    <div className="content" key={i._id}>
+                        <div className="info-card">
+                            <div className="info-user">
+                                <h2>Researcher: {i.userId?.name}</h2>
+                            </div>
 
-                        <h2>Shark: {i.sharkId?.name}</h2>
+                            <h3>Shark: {i.sharkId?.name}</h3>
 
-                        {i.imageUrl && <img src={i.imageUrl} alt={i.sharkId?.name} />}
+                            {i.imageUrl && <img src={`${import.meta.env.VITE_API_BASE_URL}${i.imageUrl}`} alt={i.sharkId?.name} />}
 
-                        <div className="card-content">
-                            <h2>{i.title}</h2>
-                            <p>{i.description}</p>
-                            {user?.role === "researcher" && i.userId?._id === user?._id && <button onClick={() => setSelectedInfo(i)}>Edit</button>}{" "}
+                            <div className="card-content">
+                                <h3>{i.title}</h3>
+
+                                <p>{i.description}</p>
+
+                                {user?.role === "researcher" && i.userId?._id === user?._id && <button onClick={() => setSelectedInfo(i)}>Edit</button>}
+                            </div>
                         </div>
                     </div>
                 ))}
+
                 {selectedInfo && <EditInfo info={selectedInfo} onUpdated={handleUpdated} onClose={() => setSelectedInfo(null)} />}
             </div>
         </div>

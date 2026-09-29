@@ -75,11 +75,7 @@ router.post("/shark/bulk", auth.authenticate, async(req, res) => {
     }
 })
 
-router.patch(
-    "/sharks/:id",
-    auth.authenticate,
-    upload.single("image"),
-    async (req, res) => {
+router.patch("/sharks/:id",auth.authenticate,upload.single("image"), async (req, res) => {
         try {
             const updateData = {
                 ...req.body

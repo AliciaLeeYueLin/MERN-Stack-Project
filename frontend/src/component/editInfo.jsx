@@ -1,35 +1,25 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"
 
 function EditInfo({ info, onClose, onUpdated }) {
-
-    const navigate = useNavigate()
-
     const [information, setInformation] = useState({
-        sharkId: info.sharkId?._id || info.sharkId || "",
+        sharkId: info.sharkId?._id || "",
         title: info.title || "",
         description: info.description || "",
         imageUrl: info.imageUrl || "",
     });
 
-    const [originalInfo] = useState({
-        title: info.title || "",
-        description: info.description || "",
-        imageUrl: info.imageUrl || "",
-    });
-
+    const [originalInfo] = useState(info);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
-
     const [sharks, setSharks] = useState([]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, files } = e.target;
 
         setInformation({
             ...information,
-            [name]: value,
+            [name]: files ? files[0] : value,
         });
     };
 
@@ -44,20 +34,31 @@ function EditInfo({ info, onClose, onUpdated }) {
             return;
         }
 
-        const changedFields = {};
+        const formData = new FormData();
 
-        Object.keys(information).forEach((key) => {
-            if (information[key] !== originalInfo[key]) {
-                changedFields[key] = information[key];
-            }
-        });
+        if (information.sharkId !== (originalInfo.sharkId?._id || originalInfo.sharkId)) {
+            formData.append("sharkId", information.sharkId);
+        }
+
+        if (information.title !== originalInfo.title) {
+            formData.append("title", information.title);
+        }
+
+        if (information.description !== originalInfo.description) {
+            formData.append("description", information.description);
+        }
+
+        if (information.image) {
+            formData.append("image", information.image);
+        }
 
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/info/info/${info._id}`, changedFields, {
+            const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/info/info/${info._id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
+
             setMessage("Info updated successfully.");
 
             onUpdated(response.data);
@@ -72,57 +73,38 @@ function EditInfo({ info, onClose, onUpdated }) {
                 return;
             }
 
-            setError(error.response?.data?.error || "Failed to update Info.");
-        }
-    };
-
-    const handleDelete = async () => {
-        const token = localStorage.getItem("jwt_token");
-
-        try {
-            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/info/info/${info._id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            onClose();
-        } catch (error) {
-            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                localStorage.removeItem("jwt_token");
-                onClose();
-                return;
+            if (error.response?.status === 404) {
+                setError("Info not found.");
+            } else {
+                setError("Failed to update info.");
             }
-
-            setError("Failed to delete info.");
         }
     };
 
     useEffect(() => {
-        const token = localStorage.getItem("jwt_token");
+    const getSharks = async () => {
+        try {
+            const token = localStorage.getItem("jwt_token");
 
-        if (!token || token.trim() === "") {
-            localStorage.removeItem("jwt_token");
-            navigate("/");
-            return;
-        }
-
-        const getSharks = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/shark/sharks`, {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_BASE_URL}/shark/sharks`,
+                {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                });
+                }
+            );
 
-                setSharks(response.data);
-            } catch (error) {
-                setError("Failed to load sharks.");
-            }
-        };
+            setSharks(response.data);
 
-        getSharks();
-    }, [navigate]);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    getSharks();
+}, []);
+
     return (
         <div className="edit-modal-overlay">
             <div className="edit-modal">
@@ -135,16 +117,17 @@ function EditInfo({ info, onClose, onUpdated }) {
                     <div className="form-group">
                         <label>Shark</label>
 
-                        <select name="sharkId" value={information.sharkId} onChange={handleChange} required>
-                            <option value="">Select a Shark</option>
+                        <select name="sharkId" value={information.sharkId} onChange={handleChange}>
+                            <option value="">Select a shark</option>
 
                             {sharks.map((shark) => (
-                                <option value={shark._id} key={shark._id}>
+                                <option key={shark._id} value={shark._id}>
                                     {shark.name}
                                 </option>
                             ))}
                         </select>
                     </div>
+
                     <div className="form-group">
                         <label>Title</label>
                         <input type="text" name="title" value={information.title} onChange={handleChange} />
@@ -152,22 +135,18 @@ function EditInfo({ info, onClose, onUpdated }) {
 
                     <div className="form-group">
                         <label>Description</label>
-                        <input type="text" name="description" value={information.description} onChange={handleChange} />
+                        <textarea name="description" value={information.description} onChange={handleChange} />
                     </div>
 
                     <div className="form-group">
-                        <label>Image URL</label>
-                        <input type="text" name="imageUrl" value={information.imageUrl} onChange={handleChange} />
+                        <label>Image</label>
+                        <input type="file" name="image" accept="image/*" onChange={handleChange} />
                     </div>
 
                     <button type="submit">Update Info</button>
 
                     <button type="button" onClick={onClose}>
                         Cancel
-                    </button>
-
-                    <button type="button" onClick={handleDelete}>
-                        Delete
                     </button>
                 </form>
             </div>

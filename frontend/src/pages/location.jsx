@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import EditLocation from "../component/editLocation";
 
 function Locations() {
     const [locations, setLocations] = useState([]);
     const [error, setError] = useState("");
+    const [selectedLocation, setSelectedLocation] = useState(null);
 
     const navigate = useNavigate();
 
@@ -17,7 +19,7 @@ function Locations() {
             return;
         }
 
-        const getSharks = async () => {
+        const getLocation = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/location/locations`, {
                     headers: {
@@ -37,8 +39,12 @@ function Locations() {
             }
         };
 
-        getSharks();
+        getLocation();
     }, [navigate]);
+
+    const handleUpdated = (updatedLocation) => {
+        setLocations((oldLocations) => oldLocations.map((location) => (location._id === updatedLocation._id ? updatedLocation : location)));
+    };
 
     return (
         <div className="location-container">
@@ -73,11 +79,15 @@ function Locations() {
                                 <strong>Longitude:</strong> {location.longitude}
                             </p>
                         </div>
+                        <button className="location-edit" onClick={() => setSelectedLocation(location)}>
+                            Edit
+                        </button>
 
-                        <button onClick={() => navigate(`/locations/edit/${location._id}`)}>Edit</button>
                     </div>
                 ))}
             </div>
+                                    {selectedLocation && <EditLocation location={selectedLocation} onUpdated={handleUpdated} onClose={() => setSelectedLocation(null)} />}
+
         </div>
     );
 }
