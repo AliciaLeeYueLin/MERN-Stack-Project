@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import EditLocation from "../component/editLocation";
+import EditLocation from "../location/editLocation";
 
 function Locations() {
     const [locations, setLocations] = useState([]);
     const [error, setError] = useState("");
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isResearcher, setIsResearcher] = useState(false);
 
     const navigate = useNavigate();
 
@@ -18,6 +20,27 @@ function Locations() {
             navigate("/");
             return;
         }
+
+        const getUser = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/user`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.data.role === "admin") {
+                    setIsAdmin(true);
+                }
+                if (response.data.role === "researcher") {
+                    setIsResearcher(true);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        getUser();
 
         const getLocation = async () => {
             try {
@@ -44,6 +67,10 @@ function Locations() {
 
     const handleUpdated = (updatedLocation) => {
         setLocations((oldLocations) => oldLocations.map((location) => (location._id === updatedLocation._id ? updatedLocation : location)));
+    };
+
+    const handleDeleted = (locationId) => {
+        setLocations((oldLocations) => oldLocations.filter((location) => location._id !== locationId));
     };
 
     return (
@@ -79,15 +106,21 @@ function Locations() {
                                 <strong>Longitude:</strong> {location.longitude}
                             </p>
                         </div>
-                        <button className="location-edit" onClick={() => setSelectedLocation(location)}>
-                            Edit
+                        <button type="button">
+                            <a href={`https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}`} target="_blank" rel="noopener noreferrer" className="map-button">
+                                🧭 Get Directions
+                            </a>
                         </button>
 
+                        {(isAdmin || isResearcher) && (
+                            <button className="location-edit" onClick={() => setSelectedLocation(location)}>
+                                Edit
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>
-                                    {selectedLocation && <EditLocation location={selectedLocation} onUpdated={handleUpdated} onClose={() => setSelectedLocation(null)} />}
-
+            {selectedLocation && <EditLocation location={selectedLocation} onUpdated={handleUpdated} onDeleted={handleDeleted} onClose={() => setSelectedLocation(null)} />}
         </div>
     );
 }

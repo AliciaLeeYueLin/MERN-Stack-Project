@@ -27,6 +27,10 @@ const SightingSchema = new mongoose.Schema({
         type: Number,
         required: false,
     },
+    weatherCondition: {
+    type: String,
+    required: false,
+},
     visibility: {
         type: String,
         required: false,

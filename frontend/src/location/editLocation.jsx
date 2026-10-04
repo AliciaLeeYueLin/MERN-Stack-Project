@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function EditLocation({ location, onClose, onUpdated }) {
+function EditLocation({ location, onClose, onUpdated, onDeleted }) {
     const [locations, setLocations] = useState({
         name: location.name || "",
         country: location.country || "",
@@ -14,7 +14,7 @@ function EditLocation({ location, onClose, onUpdated }) {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
-    const handleChange = (e) => {   
+    const handleChange = (e) => {
         const { name, value } = e.target;
 
         setLocations({
@@ -34,13 +34,13 @@ function EditLocation({ location, onClose, onUpdated }) {
             return;
         }
 
-       const changedFields = {};
-      
-       Object.keys(locations).forEach((key) => {
-    if (locations[key] !== originalLocation[key]) {
-        changedFields[key] = locations[key];
-    }
-});
+        const changedFields = {};
+
+        Object.keys(locations).forEach((key) => {
+            if (locations[key] !== originalLocation[key]) {
+                changedFields[key] = locations[key];
+            }
+        });
         try {
             const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/location/location/${location._id}`, changedFields, {
                 headers: {
@@ -70,6 +70,37 @@ function EditLocation({ location, onClose, onUpdated }) {
         }
     };
 
+    const handleDelete = async () => {
+        const token = localStorage.getItem("jwt_token");
+        if (!token || token.trim() === "") {
+            localStorage.removeItem("jwt_token");
+            onClose();
+            return;
+        }
+
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/location/location/${location._id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setMessage("Location deleted successfully.");
+            onDeleted(location._id);
+
+            setTimeout(() => {
+                onClose();
+            }, 1000);
+        } catch (error) {
+            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                localStorage.removeItem("jwt_token");
+                navigate("/");
+                return;
+            }
+
+            setError("Failed to delete location.");
+        }
+    };
     return (
         <div className="edit-modal-overlay">
             <div className="edit-modal">
@@ -79,7 +110,6 @@ function EditLocation({ location, onClose, onUpdated }) {
                 {message && <p>{message}</p>}
 
                 <form onSubmit={handleUpdate} className="">
-
                     <div className="form-group">
                         <label>Name</label>
                         <input type="text" name="name" value={locations.name} onChange={handleChange} />
@@ -104,7 +134,9 @@ function EditLocation({ location, onClose, onUpdated }) {
                         <input type="number" name="longitude" value={locations.longitude} onChange={handleChange} />
                     </div>
                     <button type="submit">Update Location</button>
-
+                    <button type="button" onClick={handleDelete}>
+                        Delete Location
+                    </button>
                     <button type="button" onClick={onClose}>
                         Cancel
                     </button>

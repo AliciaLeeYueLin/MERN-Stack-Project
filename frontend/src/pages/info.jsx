@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import EditInfo from "../component/editInfo";
-import { Modal } from "react-bootstrap";
+import EditInfo from "../info/editInfo";
 
 function Info() {
     const [info, setInfo] = useState([]);
@@ -123,17 +122,22 @@ function Info() {
             });
         };
     }, [info]);
+
+    const handleDeleted = (infoId) => {
+    setInfo((oldInfo) =>
+        oldInfo.filter((i) => i._id !== infoId)
+    );
+};
+
     return (
         <div className="info-container">
             <div className="info-header">
-                <h1>Info</h1>
-                <div className="btn">
-                    {isResearcher && (
-                        <button className="add" onClick={() => navigate(`/info/add/`)}>
-                            +
-                        </button>
-                    )}
-                </div>
+                <h1>Info Area</h1>
+                {isResearcher && (
+                    <button className="add-info" onClick={() => navigate(`/info/add/`)}>
+                        +
+                    </button>
+                )}
             </div>
 
             {error && <div className="error-message">{error}</div>}
@@ -150,7 +154,7 @@ function Info() {
 
                             {i.imageUrl && <img src={`${import.meta.env.VITE_API_BASE_URL}${i.imageUrl}`} alt={i.sharkId?.name} />}
 
-                            <div className="card-content">
+                            <div className="info-content">
                                 <h3>{i.title}</h3>
 
                                 <p>{i.description}</p>
@@ -161,7 +165,7 @@ function Info() {
                     </div>
                 ))}
 
-                {selectedInfo && <EditInfo info={selectedInfo} onUpdated={handleUpdated} onClose={() => setSelectedInfo(null)} />}
+                {selectedInfo && <EditInfo info={selectedInfo} onUpdated={handleUpdated} onDeleted={handleDeleted} onClose={() => setSelectedInfo(null)} />}
             </div>
         </div>
     );

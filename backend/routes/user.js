@@ -5,7 +5,26 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const auth = require("../middleware/auth");
+const multer = require("multer")
 
+const path = require("path")
+
+
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/");
+    },
+
+    filename: (req, file, cb) => {
+        cb(
+            null,
+            Date.now() + path.extname(file.originalname)
+        );
+    }
+});
+
+const upload = multer({ storage });
 router.use(express.json());
 
 router.post("/register", async (req, res) => {
@@ -75,6 +94,32 @@ router.get("/user", auth.authenticate, async (req, res) => {
         res.status(401).json({ error: error.message });
     }
 });
+
+router.patch("/profile",upload.single("profile"), auth.authenticate, async (req, res) => {
+    try{
+        const user = await User.findById(req.user._id)
+
+        if(!user){
+            return res.status(404).json({
+                error: "User not found"
+            })
+        }
+
+        if(req.file){
+            user.profile = `/uploads/${req.file.filename}`
+        }
+
+        await user.save();
+
+        res.json({
+            message: "Profile updated successfully",
+            user
+        })
+    } catch(error){
+        res.status(400).json({ error: error.message })
+    }
+}
+)
 
 // router.get("/users", auth.authenticate, async (req, res) => {
 //     try {

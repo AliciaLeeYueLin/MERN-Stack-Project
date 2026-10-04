@@ -85,11 +85,26 @@ router.patch("/info/:id", auth.authenticate, upload.single("image"), async (req,
         }
 
         res.json(updateInfo);
-    } catch (error) {
-        res.status(400).json({
-            error: error.message,
-        });
+    }  catch (error) {
+    console.log("UPDATE ERROR:", error.response?.data);
+    console.log("FULL ERROR:", error);
+
+    if (
+        error.response &&
+        (error.response.status === 401 ||
+            error.response.status === 403)
+    ) {
+        localStorage.removeItem("jwt_token");
+        onClose();
+        return;
     }
+
+    if (error.response?.status === 404) {
+        setError("Info not found.");
+    } else {
+        setError(error.response?.data?.error || "Failed to update info.");
+    }
+}
 });
 
 router.delete("/info/:id", auth.authenticate, async (req, res) => {

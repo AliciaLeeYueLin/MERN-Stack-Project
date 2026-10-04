@@ -13,57 +13,54 @@ router.get("/locations", auth.authenticate, async (req, res) => {
         res.status(401).json({ error: error.message });
     }
 });
-
 router.post("/location", auth.authenticate, async (req, res) => {
     try {
-        const { name, country, region, description } = req.body;
+        const { name, country, region, description, latitude, longitude } = req.body;
 
         const newLocation = new Location({
-            name: name,
-            country: country,
-            region: region,
-            description: description,
+            name,
+            country,
+            region,
+            description,
+            latitude,
+            longitude,
         });
 
         const savedLocation = await newLocation.save();
 
         res.status(201).json(savedLocation);
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        console.error(error);
+        res.status(400).json({ error: error.message });
+    }
+});
+router.post("/location/bulk", auth.authenticate, async (req, res) => {
+    try {
+        const locations = await Location.insertMany(req.body);
+
+        res.status(201).json(locations);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
-router.post("/location/bulk", auth.authenticate, async(req, res) => {
-    try{
-        const locations = await Location.insertMany(req.body)
+router.patch("/location/:id", auth.authenticate, async (req, res) => {
+    try {
+        const updateLocation = await Location.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-        res.status(201).json(locations)
-    }catch(error){
-        res.status(400).json({ error: error.message})
+        res.json(updateLocation);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
-})
+});
+router.delete("/location/:id", auth.authenticate, async (req, res) => {
+    try {
+        const deletedLocation = await Location.findByIdAndDelete(req.params.id);
 
-router.patch("/location/:id", auth.authenticate, async(req, res) => {
-    try{
-        const updateLocation = await Location.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {new: true}
-        )
-
-        res.json(updateLocation)
-    }catch(error){
-        res.status(400).json({error:error.message})
+        res.json(deletedLocation);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
-})
-router.delete("/location/:id", auth.authenticate, async(req, res)=> {
-    try {  const deletedLocation = await Location.findByIdAndDelete(req.params.id);
-
-    res.json(deletedLocation);
-  
-} catch (error) {
-    res.status(400).json({ error: error.message });
-}
-})
+});
 
 module.exports = router;

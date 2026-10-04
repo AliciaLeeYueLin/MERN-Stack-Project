@@ -19,6 +19,11 @@ const UserSchema = new mongoose.Schema({
         enum: ["user", "researcher", "admin"],
         default: "user",
     },
+    profile: {
+        type: String,
+        required: false,
+        default: "/default-profile.png"
+    },
     createdAt: {
         type: Date,
         default: Date.now,

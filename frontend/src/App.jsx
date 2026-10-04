@@ -8,11 +8,15 @@ import Info from "./pages/info"
 import Sighting from "./pages/sighting"
 import ProtectedRoute from "./component/protectedRoutes";
 import "./App.css";
-import NewLocation from "./component/newLocation";
-import NewShark from "./component/newShark"
-import EditShark from "./component/editShark";
-import Approve from "./component/approve"
-import NewInfo from "./component/newInfo"
+import NewLocation from "./location/newLocation";
+import NewShark from "./shark/newShark"
+import EditShark from "./shark/editShark";
+import Approve from "./user/approve"
+import NewInfo from "./info/newInfo"
+import SightingDetail from "./sighting/sightingDetail";
+import NewSighting from "./sighting/newSighting"
+import Footer from "./pages/footer"
+import SharkDetail from "./shark/sharkDetails";
 
 
 function App() {
@@ -27,15 +31,23 @@ function App() {
                     <Route path="/sharks" element={<Shark />} />
                     <Route path="/sharks/add" element={<NewShark />} />
                     <Route path="/sharks/edit/:id" element={<EditShark />} />
+                    <Route path="/sharks/detail/:id" element={<SharkDetail />} />
                     <Route path="/location" element={<Location />} />
                     <Route path="/location/add" element={<NewLocation/>} />
                     <Route path="/request" element={<Approve/>} />
                     <Route path="/info" element={<Info/>} />
                     <Route path="/info/add" element={<NewInfo/>} />
                     <Route path="/sighting" element={<Sighting/>} />
+                    <Route path="/sighting/add" element={<NewSighting/>} />
+                    <Route path="/sighting/detail/:id" element={<SightingDetail/>} />
+
                 </Route>
             </Routes>
+             <Footer/>
         </BrowserRouter>
+       
+
+
     );
 }
 

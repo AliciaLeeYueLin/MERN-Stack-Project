@@ -2,30 +2,66 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const Sighting = require("../models/Sighting");
-
+const Shark = require("../models/Shark");
+const Location = require("../models/Location");
 router.use(express.json());
 
 router.get("/sightings", auth.authenticate, async (req, res) => {
     try {
-        const allSighting = await Sighting.find({})
+        const { search } = req.query;
+
+        const query = {};
+
+        if (search) {
+           
+            const matchingSharks = await Shark.find({ name: { $regex: search, $options: "i" } }).select("_id");
+
+            const matchingLocations = await Location.find({ name: { $regex: search, $options: "i" }}).select("_id");
+
+            query.$or = [
+                { sharkId: { $in: matchingSharks.map(s => s._id) } },
+                { locationId: { $in: matchingLocations.map(l => l._id) } }
+            ];
+        }
+
+        const allSighting = await Sighting.find(query)
             .populate("sharkId")
             .populate("locationId");
 
         res.json(allSighting);
     } catch (error) {
-        res.status(500).json({
-            error: error.message,
-        });
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get("/sighting/:id", async (req, res) => {
+    try {
+        const getSightingById = await Sighting.findById({ _id: req.params.id }).populate("sharkId").populate("locationId");
+
+        res.json(getSightingById);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
 router.post("/sighting", async (req, res) => {
     try {
-        const { sharkId, locationId } = req.body;
+        const { sharkId, locationId, description, date, waterDepth, waterTemperature, weatherCondition, visibility, sharkCount, behavior, observer, notes } = req.body;
 
         const newSighting = new Sighting({
             sharkId,
             locationId,
+            description,
+            date,
+            waterDepth,
+            waterTemperature,
+            weatherCondition,
+            visibility,
+            sharkCount,
+            behavior,
+            observer,
+            notes,
         });
 
         const savedSighting = await newSighting.save();
@@ -43,6 +79,31 @@ router.post("/bulk", auth.authenticate, async (req, res) => {
         const sightings = await Sighting.insertMany(req.body);
 
         res.status(201).json(sightings);
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
+        });
+    }
+});
+
+router.patch("/sighting/:id", auth.authenticate, async (req, res) => {
+    try {
+        const updatedSighting = await Sighting.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        if (!updatedSighting) {
+            return res.status(404).json({
+                error: "Sighting not found",
+            });
+        }
+
+        res.json(updatedSighting);
     } catch (error) {
         res.status(400).json({
             error: error.message,
@@ -111,7 +172,7 @@ router.get("/frequency", auth.authenticate, async (req, res) => {
     }
 });
 
-router.delete("/sighting", auth.authenticate, async (req, res) => {
+router.delete("/sightings", auth.authenticate, async (req, res) => {
     try {
         const deleteSighting = await Sighting.deleteMany({});
 
@@ -128,5 +189,25 @@ router.delete("/sighting", auth.authenticate, async (req, res) => {
         });
     }
 });
+
+router.delete("/sighting/:id", auth.authenticate, async (req, res) => {
+    try {
+       const deleteSighting = await Sighting.findByIdAndDelete(req.params.id);
+
+if (!deleteSighting) {
+    return res.status(404).json({
+        error: "Sighting not found",
+    });
+}
+
+res.json(deleteSighting);
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
+        });
+    }
+});
+
+
 
 module.exports = router;

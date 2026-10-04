@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import EditLocation from "../component/editLocation";
+import EditSighting from "../sighting/editSighting";
 
-function Locations() {
+function Sighting() {
     const [sightings, setSightings] = useState([]);
     const [error, setError] = useState("");
     const [selectedSighting, setSelectedSighting] = useState(null);
+    const [search, setSearch] = useState("");
 
     const navigate = useNavigate();
 
@@ -25,6 +26,9 @@ function Locations() {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
+                    params: {
+                        search: search,
+                    },
                 });
 
                 setSightings(response.data);
@@ -40,16 +44,20 @@ function Locations() {
         };
 
         getSighting();
-    }, [navigate]);
+    }, [search, navigate]);
 
-    // const handleUpdated = (updatedLocation) => {
-    //     setLocations((oldLocations) => oldLocations.map((location) => (location._id === updatedLocation._id ? updatedLocation : location)));
-    // };
+    const handleUpdated = (updatedSighting) => {
+        setSightings((oldSightings) => oldSightings.map((sighting) => (sighting._id === updatedSighting._id ? updatedSighting : sighting)));
+    };
+
+    const handleDeleted = (sightingId) => {
+        setSightings((oldSightings) => oldSightings.filter((sighting) => sighting._id !== sightingId));
+    };
 
     return (
         <div className="location-container">
             <div className="location-header">
-                <h1>Location</h1>
+                <h1>Sighting</h1>
 
                 <button className="add" onClick={() => navigate(`/sighting/add/`)}>
                     Add
@@ -57,32 +65,36 @@ function Locations() {
             </div>
 
             {error && <div className="error-message">{error}</div>}
-
+            <div className="search-wrapper">
+                <input type="text" placeholder="Search Shark OR Location" value={search} onChange={(e) => setSearch(e.target.value)} className="sighting-filter" />
+            </div>
             <div className="sighting-grid">
                 {sightings.map((sighting) => (
-                    <div className="sighting-card" key={sightings._id}>
+                    <div key={sighting._id}>
                         <div className="card-content">
-                             <div className="info-user">
-                                <h2>Researcher: {sighting.sharkId?.name}</h2>
+                            <div className="sighting-user">
+                                <h2>Shark: {sighting.sharkId?.name}</h2>
                             </div>
+                            <div className="sighting-card">
+                                <h3>Location: {sighting.locationId?.name}</h3>
+                                <h2>{sighting.description}</h2>
+                                <p>Date: {new Date(sighting.date).toLocaleDateString()}</p>
 
-                            <h3>Shark: {sighting.locationId?.name}</h3>
-                            <h2>{sighting.description}</h2>
-                            <h2>{sighting.date}</h2>
-                        
+                                <button className="detail" onClick={() => navigate(`/sighting/detail/${sighting._id}`)}>
+                                    View Detail
+                                </button>
+                                <button className="sighting-edit" onClick={() => setSelectedSighting(sighting)}>
+                                    Edit
+                                </button>
+                            </div>
                         </div>
-                        <button className="sighting-edit" onClick={() => setSelectedSighting(location)}>
-                            Edit
-                        </button>
-
                     </div>
                 ))}
             </div>
-                                    {selectedSighting && <EditLocation location={selectedSighting}  onClose={() => setSelectedSighting(null)} />}
-                                        {/* onUpdated={handleUpdated} */}
-
+            {selectedSighting && <EditSighting sighting={selectedSighting} onUpdated={handleUpdated} onDeleted={handleDeleted} onClose={() => setSelectedSighting(null)} />}
+            {/* onUpdated={handleUpdated} */}
         </div>
     );
 }
 
-export default Locations;
+export default Sighting;

@@ -3,18 +3,18 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import UserInfo from "../component/userInfo";
-import ResearcherForm from "../component/researcherForm";
-
+import UserInfo from "../user/userInfo";
+import ResearcherForm from "../user/researcherForm";
 
 const Navigation = () => {
     const [error, setError] = useState("");
 
     const [users, setUsers] = useState(null);
     const [user, setUser] = useState({});
-    const [isUser, setIsUser] = useState(false)
+    const [isUser, setIsUser] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const [showUserInfo, setShowUserInfo] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ const Navigation = () => {
                     setIsAdmin(true);
                 }
                 if (response.data.role === "user") {
-                    setIsUser(true)
+                    setIsUser(true);
                 }
 
                 setUser(response.data);
@@ -73,34 +73,45 @@ const Navigation = () => {
             <div className="shark-navbar-container">
                 <div className="shark-logo">🦈 Shark Research</div>
 
-                <div className="shark-nav-links">
+                <button className="hamburger-button" onClick={() => setMenuOpen(!menuOpen)}>
+                    ☰
+                </button>
+
+                <div className={`shark-nav-links ${menuOpen ? "show-menu" : ""}`}>
                     <li className="nav-item">
                         <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/home">
-                            {({ isActive }) => <Button variant={isActive ? "primary" : "outline-primary"}>Home</Button>}
+                            Home
                         </NavLink>
                     </li>
 
                     <li className="nav-item">
                         <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/sharks">
-                            {({ isActive }) => <Button variant={isActive ? "primary" : "outline-primary"}>Shark</Button>}
+                            Shark
                         </NavLink>
                     </li>
 
                     <li className="nav-item">
                         <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/location">
-                            {({ isActive }) => <Button variant={isActive ? "primary" : "outline-primary"}>Location</Button>}
+                            Location
                         </NavLink>
                     </li>
+
+                    <li className="nav-item">
+                        <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/sighting">
+                            Sighting
+                        </NavLink>
+                    </li>
+
                     <li className="nav-item">
                         <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/info">
-                            {({ isActive }) => <Button variant={isActive ? "primary" : "outline-primary"}>Info</Button>}
+                            Info
                         </NavLink>
                     </li>
 
                     {isAdmin && (
                         <li className="nav-item">
                             <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/request">
-                                {({ isActive }) => <Button variant={isActive ? "primary" : "outline-primary"}>Request</Button>}
+                                Request
                             </NavLink>
                         </li>
                     )}
@@ -113,13 +124,15 @@ const Navigation = () => {
 
                     <li className="nav-item user-menu">
                         <button className="user-button" onClick={openInfo}>
-                            {user?.name}
+                            {user?.profile ? <img src={user.profile.startsWith("/uploads/") ? `${import.meta.env.VITE_API_BASE_URL}${user.profile}` : user.profile} alt="Profile" className="navbar-profile-pic" /> : <span className="profile-placeholder">👤</span>}
+
+                            <span>{user?.name}</span>
                         </button>
 
                         {showUserInfo && (
                             <div className="user-info-box">
                                 <UserInfo onClose={handleClose} />
-                                 {isUser && <ResearcherForm onClose={handleClose} />}
+                                {isUser && <ResearcherForm onClose={handleClose} />}
                             </div>
                         )}
                     </li>

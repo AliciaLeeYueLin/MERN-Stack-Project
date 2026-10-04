@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function EditInfo({ info, onClose, onUpdated }) {
+function EditInfo({ info, onClose, onUpdated, onDeleted }) {
     const [information, setInformation] = useState({
         sharkId: info.sharkId?._id || "",
         title: info.title || "",
@@ -81,29 +81,61 @@ function EditInfo({ info, onClose, onUpdated }) {
         }
     };
 
-    useEffect(() => {
-    const getSharks = async () => {
+    const handleDelete = async () => {
+        const token = localStorage.getItem("jwt_token");
+        if (!token || token.trim() === "") {
+            localStorage.removeItem("jwt_token");
+            onClose();
+            return;
+        }
+
         try {
-            const token = localStorage.getItem("jwt_token");
+            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/info/info/${info._id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_BASE_URL}/shark/sharks`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            setMessage("Info deleted successfully.");
+            onDeleted(info._id);
 
-            setSharks(response.data);
-
+            setTimeout(() => {
+                onClose();
+            }, 1000);
         } catch (error) {
-            console.log(error);
+            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                localStorage.removeItem("jwt_token");
+                onClose();
+                return;
+            }
+
+            if (error.response?.status === 404) {
+                setError("Info not found.");
+            } else {
+                setError("Failed to delete info.");
+            }
         }
     };
 
-    getSharks();
-}, []);
+    useEffect(() => {
+        const getSharks = async () => {
+            try {
+                const token = localStorage.getItem("jwt_token");
+
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/shark/sharks`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setSharks(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        getSharks();
+    }, []);
 
     return (
         <div className="edit-modal-overlay">
@@ -144,6 +176,9 @@ function EditInfo({ info, onClose, onUpdated }) {
                     </div>
 
                     <button type="submit">Update Info</button>
+                    <button type="button" onClick={handleDelete}>
+                        Delete Info
+                    </button>
 
                     <button type="button" onClick={onClose}>
                         Cancel
