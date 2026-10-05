@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
-
+import "../account/account.css"
 
 function Register() {
     const [email, setEmail] = useState("");

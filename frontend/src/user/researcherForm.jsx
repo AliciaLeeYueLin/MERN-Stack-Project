@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 
-function ResearcherForm({ handleCancel }) {
+function ResearcherForm({ onClose }) {
     const [form, setForm] = useState({
         name: "",
         organization: "",
@@ -15,6 +16,7 @@ function ResearcherForm({ handleCancel }) {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const [user, setUser] = useState("");
+    const [showConfirm, setShowConfirm] = useState(null);
 
     const navigate = useNavigate();
 
@@ -26,7 +28,6 @@ function ResearcherForm({ handleCancel }) {
             [name]: type === "checkbox" ? checked : value,
         });
     };
-
     const handleApply = async (e) => {
         e.preventDefault();
 
@@ -39,21 +40,26 @@ function ResearcherForm({ handleCancel }) {
         }
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/research/request`, form, {
+            const applicationData = {
+                ...form,
+                name: user.name,
+            };
+
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/research/request`, applicationData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
-            setMessage("Request submitted successfully!");
-        } catch (error) {
-            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                localStorage.removeItem("jwt_token");
-                navigate("/");
-                return;
-            }
+            setShowConfirm(null);
 
-            setError("Failed to submit request.");
+            setMessage("Request submitted successfully!");
+            setTimeout(() => {
+                onClose();
+            }, 1000);
+        } catch (error) {
+            console.log(error.response?.data);
+            setError(error.response?.data?.error || "Failed to submit request.");
         }
     };
     useEffect(() => {
@@ -127,15 +133,32 @@ function ResearcherForm({ handleCancel }) {
                 </div>
 
                 <div className="button-group">
-                    <button type="submit" className="add-button">
+                    <button type="button" className="add-button" onClick={() => setShowConfirm(true)}>
                         Submit Form
                     </button>
 
-                    <button type="button" onClick={handleCancel} className="cancel-button">
+                    <button type="button" onClick={onClose} className="cancel-button">
                         Cancel
                     </button>
                 </div>
             </form>
+            <Modal show={showConfirm === true} onHide={() => setShowConfirm(null)} centered>
+                <Modal.Header>
+                    <Modal.Title>Confirm Application</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>Are you sure you want to submit your researcher application? Once the form is submitted, data cannot be change</Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowConfirm(null)}>
+                        Cancel
+                    </Button>
+
+                    <Button variant="primary" onClick={handleApply}>
+                        Yes, Submit
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }

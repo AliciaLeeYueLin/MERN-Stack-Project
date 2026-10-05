@@ -4,8 +4,7 @@ import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserInfo from "../user/userInfo";
-import ResearcherForm from "../user/researcherForm";
-
+import "../navbar/navbar.css"
 const Navigation = () => {
     const [error, setError] = useState("");
 
@@ -132,7 +131,6 @@ const Navigation = () => {
                         {showUserInfo && (
                             <div className="user-info-box">
                                 <UserInfo onClose={handleClose} />
-                                {isUser && <ResearcherForm onClose={handleClose} />}
                             </div>
                         )}
                     </li>

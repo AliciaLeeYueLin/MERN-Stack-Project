@@ -1,23 +1,23 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./pages/register";
 import Login from "./pages/login";
-import Home from "./pages/home"
+import Home from "./pages/home";
 import Shark from "./pages/shark";
 import Location from "./pages/location";
-import Info from "./pages/info"
-import Sighting from "./pages/sighting"
+import Info from "./info/info";
+import Sighting from "./pages/sighting";
 import ProtectedRoute from "./component/protectedRoutes";
 import "./App.css";
 import NewLocation from "./location/newLocation";
-import NewShark from "./shark/newShark"
+import NewShark from "./shark/newShark";
 import EditShark from "./shark/editShark";
-import Approve from "./user/approve"
-import NewInfo from "./info/newInfo"
+import Approve from "./user/approve";
+import NewInfo from "./info/newInfo";
 import SightingDetail from "./sighting/sightingDetail";
-import NewSighting from "./sighting/newSighting"
-import Footer from "./pages/footer"
+import NewSighting from "./sighting/newSighting";
+import Footer from "./pages/footer";
 import SharkDetail from "./shark/sharkDetails";
-
+import InfoNavbar from "./pages/infoNavbar";
 
 function App() {
     return (
@@ -33,21 +33,18 @@ function App() {
                     <Route path="/sharks/edit/:id" element={<EditShark />} />
                     <Route path="/sharks/detail/:id" element={<SharkDetail />} />
                     <Route path="/location" element={<Location />} />
-                    <Route path="/location/add" element={<NewLocation/>} />
-                    <Route path="/request" element={<Approve/>} />
-                    <Route path="/info" element={<Info/>} />
-                    <Route path="/info/add" element={<NewInfo/>} />
-                    <Route path="/sighting" element={<Sighting/>} />
-                    <Route path="/sighting/add" element={<NewSighting/>} />
-                    <Route path="/sighting/detail/:id" element={<SightingDetail/>} />
-
+                    <Route path="/location/add" element={<NewLocation />} />
+                    <Route path="/request" element={<Approve />} />
+                    <Route path="/info" element={<InfoNavbar />} />
+                    <Route path="/info-edit" element={<InfoNavbar />} />
+                    <Route path="/add-new-info" element={<InfoNavbar />} />
+                    <Route path="/sighting" element={<Sighting />} />
+                    <Route path="/sighting/add" element={<NewSighting />} />
+                    <Route path="/sighting/detail/:id" element={<SightingDetail />} />
                 </Route>
             </Routes>
-             <Footer/>
+            <Footer />
         </BrowserRouter>
-       
-
-
     );
 }
 

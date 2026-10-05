@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "axios"
+import "./sighting.css"
+
 
 function NewSighting() {
     const navigate = useNavigate();
@@ -122,7 +124,7 @@ function NewSighting() {
                 {error && <p className="error">{error}</p>}
                 {message && <p className="message">{message}</p>}
 
-                <form onSubmit={handleAdd} className="add-sharks-form">
+                <form onSubmit={handleAdd} className="add-form">
 
                     <div className="form-group">
                         <label>Shark</label>

@@ -17,31 +17,28 @@ router.get("/sharks", auth.authenticate, async (req, res) => {
         const query = {};
 
         if (search) {
-            query.$or = [
-                { name: { $regex: search, $options: "i" } }, 
-                { scientificName: { $regex: search, $options: "i" } }
-            ];
+            query.$or = [{ name: { $regex: search, $options: "i" } }, { scientificName: { $regex: search, $options: "i" } }];
         }
 
-        if(diet && diet !== "All"){
-            query.diet = diet
+        if (diet && diet !== "All") {
+            query.diet = diet;
         }
 
-        if(habitat && habitat !== "All"){
-            query.habitat = habitat
+        if (habitat && habitat !== "All") {
+            query.habitat = habitat;
         }
 
-        let sortOption = {}
+        let sortOption = {};
 
-        if(sort === "nameAsc") {
-            sortOption.name = 1
+        if (sort === "nameAsc") {
+            sortOption.name = 1;
         }
 
-        if(sort === "nameDesc") {
-            sortOption.name = -1
+        if (sort === "nameDesc") {
+            sortOption.name = -1;
         }
 
-        const sharks = await Shark.find(query).sort(sortOption)
+        const sharks = await Shark.find(query).sort(sortOption);
 
         res.json(sharks);
     } catch (error) {
@@ -63,7 +60,7 @@ router.get("/sharks/:id", auth.authenticate, async (req, res) => {
 
 router.post("/shark", auth.authenticate, upload.single("image"), async (req, res) => {
     try {
-        const { name, scientificName, description, averageSize, diet, habitat } = req.body;
+        const { name, scientificName, description, averageSize, diet, dietDetails, habitat, habitatDetails, reproduction, lifeCycle, characteristics } = req.body;
 
         const newShark = new Shark({
             name,
@@ -71,7 +68,16 @@ router.post("/shark", auth.authenticate, upload.single("image"), async (req, res
             description,
             averageSize,
             diet,
+            dietDetails,
             habitat,
+            habitatDetails,
+
+            reproduction: reproduction ? JSON.parse(reproduction) : undefined,
+
+            lifeCycle: lifeCycle ? JSON.parse(lifeCycle) : [],
+
+            characteristics: characteristics ? JSON.parse(characteristics) : [],
+
             imageUrl: req.file ? `/uploads/${req.file.filename}` : "",
         });
 
@@ -79,6 +85,8 @@ router.post("/shark", auth.authenticate, upload.single("image"), async (req, res
 
         res.status(201).json(savedShark);
     } catch (error) {
+        console.log("ADD SHARK ERROR:", error);
+
         res.status(400).json({
             error: error.message,
         });
@@ -101,11 +109,28 @@ router.patch("/sharks/:id", auth.authenticate, upload.single("image"), async (re
             ...req.body,
         };
 
+        // Convert JSON strings back into objects/arrays
+        if (req.body.reproduction) {
+            updateData.reproduction = JSON.parse(req.body.reproduction);
+        }
+
+        if (req.body.lifeCycle) {
+            updateData.lifeCycle = JSON.parse(req.body.lifeCycle);
+        }
+
+        if (req.body.characteristics) {
+            updateData.characteristics = JSON.parse(req.body.characteristics);
+        }
+
+        // Update image if a new image was uploaded
         if (req.file) {
             updateData.imageUrl = `/uploads/${req.file.filename}`;
         }
 
-        const updateShark = await Shark.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        const updateShark = await Shark.findByIdAndUpdate(req.params.id, updateData, {
+            new: true,
+            runValidators: true,
+        });
 
         if (!updateShark) {
             return res.status(404).json({
@@ -115,11 +140,50 @@ router.patch("/sharks/:id", auth.authenticate, upload.single("image"), async (re
 
         res.json(updateShark);
     } catch (error) {
+        console.log("UPDATE SHARK ERROR:", error);
+
         res.status(400).json({
             error: error.message,
         });
     }
 });
+router.patch("/shark/bulk", auth.authenticate, async (req, res) => {
+    try {
+        const sharks = req.body;
+
+        if (!Array.isArray(sharks)) {
+            return res.status(400).json({
+                error: "Request body must be an array",
+            });
+        }
+
+        const updatedSharks = [];
+
+        for (const shark of sharks) {
+            const { _id, ...updateData } = shark;
+
+            if (!_id) {
+                continue;
+            }
+
+            const updatedShark = await Shark.findByIdAndUpdate(_id, updateData, {
+                new: true,
+                runValidators: true,
+            });
+
+            if (updatedShark) {
+                updatedSharks.push(updatedShark);
+            }
+        }
+
+        res.json(updatedSharks);
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
+        });
+    }
+});
+
 router.delete("/shark/:id", auth.authenticate, async (req, res) => {
     try {
         const deleteShark = await Shark.findByIdAndDelete(req.params.id);

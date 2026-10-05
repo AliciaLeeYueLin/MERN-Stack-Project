@@ -1,19 +1,29 @@
 import { useState, useEffect } from "react";
+import { Modal, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./info.css";
 
-function EditInfo({ info, onClose, onUpdated, onDeleted }) {
+function EditInfo() {
+    const [info, setInfo] = useState([]);
+    const [selectedInfo, setSelectedInfo] = useState(null);
+
     const [information, setInformation] = useState({
-        sharkId: info.sharkId?._id || "",
-        title: info.title || "",
-        description: info.description || "",
-        imageUrl: info.imageUrl || "",
+        sharkId: "",
+        title: "",
+        description: "",
+        imageUrl: "",
+        image: null,
     });
 
-    const [originalInfo] = useState(info);
+    const [sharks, setSharks] = useState([]);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
-    const [sharks, setSharks] = useState([]);
+    const [showConfirm, setShowConfirm] = useState(false);
 
+    const navigate = useNavigate();
+
+    // Handle input changes
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
@@ -23,6 +33,23 @@ function EditInfo({ info, onClose, onUpdated, onDeleted }) {
         });
     };
 
+    // Select an info card to edit
+    const handleEdit = (selected) => {
+        setSelectedInfo(selected);
+
+        setInformation({
+            sharkId: selected.sharkId?._id || selected.sharkId || "",
+            title: selected.title || "",
+            description: selected.description || "",
+            imageUrl: selected.imageUrl || "",
+            image: null,
+        });
+
+        setError("");
+        setMessage("");
+    };
+
+    // Update info
     const handleUpdate = async (e) => {
         e.preventDefault();
 
@@ -30,21 +57,23 @@ function EditInfo({ info, onClose, onUpdated, onDeleted }) {
 
         if (!token || token.trim() === "") {
             localStorage.removeItem("jwt_token");
-            onClose();
+            navigate("/");
             return;
         }
 
         const formData = new FormData();
 
-        if (information.sharkId !== (originalInfo.sharkId?._id || originalInfo.sharkId)) {
+        const originalSharkId = selectedInfo.sharkId?._id || selectedInfo.sharkId || "";
+
+        if (information.sharkId !== originalSharkId) {
             formData.append("sharkId", information.sharkId);
         }
 
-        if (information.title !== originalInfo.title) {
+        if (information.title !== selectedInfo.title) {
             formData.append("title", information.title);
         }
 
-        if (information.description !== originalInfo.description) {
+        if (information.description !== selectedInfo.description) {
             formData.append("description", information.description);
         }
 
@@ -53,7 +82,7 @@ function EditInfo({ info, onClose, onUpdated, onDeleted }) {
         }
 
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/info/info/${info._id}`, formData, {
+            const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/info/info/${selectedInfo._id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -61,15 +90,14 @@ function EditInfo({ info, onClose, onUpdated, onDeleted }) {
 
             setMessage("Info updated successfully.");
 
-            onUpdated(response.data);
+            // Update the card in the page
+            setInfo((oldInfo) => oldInfo.map((i) => (i._id === response.data._id ? response.data : i)));
 
-            setTimeout(() => {
-                onClose();
-            }, 1000);
+            setSelectedInfo(null);
         } catch (error) {
             if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                 localStorage.removeItem("jwt_token");
-                onClose();
+                navigate("/");
                 return;
             }
 
@@ -81,31 +109,32 @@ function EditInfo({ info, onClose, onUpdated, onDeleted }) {
         }
     };
 
+    // Delete info
     const handleDelete = async () => {
         const token = localStorage.getItem("jwt_token");
+
         if (!token || token.trim() === "") {
             localStorage.removeItem("jwt_token");
-            onClose();
+            navigate("/");
             return;
         }
 
         try {
-            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/info/info/${info._id}`, {
+            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/info/info/${selectedInfo._id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
-            setMessage("Info deleted successfully.");
-            onDeleted(info._id);
+            setInfo((oldInfo) => oldInfo.filter((i) => i._id !== selectedInfo._id));
 
-            setTimeout(() => {
-                onClose();
-            }, 1000);
+            setShowConfirm(false);
+            setSelectedInfo(null);
+            setMessage("Info deleted successfully.");
         } catch (error) {
             if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                 localStorage.removeItem("jwt_token");
-                onClose();
+                navigate("/");
                 return;
             }
 
@@ -117,74 +146,169 @@ function EditInfo({ info, onClose, onUpdated, onDeleted }) {
         }
     };
 
+    // Get user's own info and sharks
     useEffect(() => {
-        const getSharks = async () => {
-            try {
-                const token = localStorage.getItem("jwt_token");
+        const getData = async () => {
+            const token = localStorage.getItem("jwt_token");
 
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/shark/sharks`, {
+            if (!token || token.trim() === "") {
+                localStorage.removeItem("jwt_token");
+                navigate("/");
+                return;
+            }
+
+            try {
+                // Get current user
+                const userResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/user`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                setSharks(response.data);
+                const currentUser = userResponse.data;
+
+                // Get all info
+                const infoResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/info/info`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                // Only keep this user's info
+                const ownInfo = infoResponse.data.filter((i) => i.userId?._id === currentUser._id);
+
+                setInfo(ownInfo);
+
+                // Get sharks for the dropdown
+                const sharkResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/shark/sharks`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setSharks(sharkResponse.data);
             } catch (error) {
-                console.log(error);
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    localStorage.removeItem("jwt_token");
+                    navigate("/");
+                    return;
+                }
+
+                setError("Failed to load your info.");
             }
         };
 
-        getSharks();
-    }, []);
+        getData();
+    }, [navigate]);
 
     return (
-        <div className="edit-modal-overlay">
-            <div className="edit-modal">
-                <h1>Edit Info</h1>
-
-                {error && <p>{error}</p>}
-                {message && <p>{message}</p>}
-
-                <form onSubmit={handleUpdate} className="add-sharks-form">
-                    <div className="form-group">
-                        <label>Shark</label>
-
-                        <select name="sharkId" value={information.sharkId} onChange={handleChange}>
-                            <option value="">Select a shark</option>
-
-                            {sharks.map((shark) => (
-                                <option key={shark._id} value={shark._id}>
-                                    {shark.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label>Title</label>
-                        <input type="text" name="title" value={information.title} onChange={handleChange} />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Description</label>
-                        <textarea name="description" value={information.description} onChange={handleChange} />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Image</label>
-                        <input type="file" name="image" accept="image/*" onChange={handleChange} />
-                    </div>
-
-                    <button type="submit">Update Info</button>
-                    <button type="button" onClick={handleDelete}>
-                        Delete Info
-                    </button>
-
-                    <button type="button" onClick={onClose}>
-                        Cancel
-                    </button>
-                </form>
+        <div className="info-container">
+            <div className="info-header">
+                <h1>Edit My Info</h1>
             </div>
+
+            {error && <p className="error">{error}</p>}
+            {message && <p className="message">{message}</p>}
+
+            {info.length === 0 && !error && <p>You have not added any info yet.</p>}
+
+            <div className="info-grid">
+                {info.map((i) => (
+                    <div className="content" key={i._id}>
+                        <div className="info-card">
+                            <div className="info-user">
+                                <h2>Researcher: {i.userId?.name}</h2>
+                            </div>
+
+                            <h3>Shark: {i.sharkId?.name}</h3>
+
+                            {i.imageUrl && <img src={`${import.meta.env.VITE_API_BASE_URL}${i.imageUrl}`} alt={i.sharkId?.name} />}
+
+                            <div className="info-content">
+                                <h3>{i.title}</h3>
+
+                                <p>{i.description}</p>
+
+                                <button type="button" onClick={() => handleEdit(i)}>
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Edit form */}
+            {selectedInfo && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                        <h1>Edit Info</h1>
+
+                        <form onSubmit={handleUpdate} className="add-form">
+                            <div className="form-group">
+                                <label>Shark</label>
+
+                                <select name="sharkId" value={information.sharkId} onChange={handleChange}>
+                                    <option value="">Select a shark</option>
+
+                                    {sharks.map((shark) => (
+                                        <option key={shark._id} value={shark._id}>
+                                            {shark.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Title</label>
+
+                                <input type="text" name="title" value={information.title} onChange={handleChange} />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Description</label>
+
+                                <textarea name="description" value={information.description} onChange={handleChange} />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Image</label>
+
+                                <input type="file" name="image" accept="image/*" onChange={handleChange} />
+                            </div>
+
+                            <button type="submit">Update Info</button>
+
+                            <button type="button" onClick={() => setShowConfirm(true)}>
+                                Delete Info
+                            </button>
+
+                            <button type="button" onClick={() => setSelectedInfo(null)}>
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete confirmation */}
+            <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
+                <Modal.Header>
+                    <Modal.Title>Confirm Deletion</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>Are you sure you want to delete this info?</Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+                        Cancel
+                    </Button>
+
+                    <Button variant="danger" onClick={handleDelete}>
+                        Yes, Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }

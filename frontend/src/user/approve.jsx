@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
+import "./user.css"
 import axios from "axios";
 
 function Approve() {
     const [applications, setApplications] = useState([]);
     const [error, setError] = useState("");
+    const [showRejectConfirm, setShowRejectConfirm] = useState(null);
 
     const navigate = useNavigate();
 
@@ -114,7 +117,7 @@ function Approve() {
                                         Approve
                                     </button>
 
-                                    <button className="reject-button" onClick={() => handleReject(application._id)}>
+                                    <button className="reject-button" onClick={() => setShowRejectConfirm(application._id)}>
                                         Reject
                                     </button>
                                 </>
@@ -135,6 +138,29 @@ function Approve() {
                     </div>
                 </div>
             ))}
+            <Modal show={showRejectConfirm !== null} onHide={() => setShowRejectConfirm(null)} centered>
+                <Modal.Header>
+                    <Modal.Title>Confirm Rejection</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>Are you sure you want to reject this application?</Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowRejectConfirm(null)}>
+                        Cancel
+                    </Button>
+
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            handleReject(showRejectConfirm);
+                            setShowRejectConfirm(null);
+                        }}
+                    >
+                        Yes, Reject
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }

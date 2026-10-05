@@ -10,7 +10,7 @@ import exampleImage1 from "../assets/exampleImage1.jpg";
 import exampleImage2 from "../assets/exampleImage2.jpg";
 import exampleImage3 from "../assets/exampleImage3.webp";
 import exampleImage4 from "../assets/exampleImage4.jpg";
-
+import "../home/home.css"
 function Home() {
     const [users, setUsers] = useState(null);
     const [error, setError] = useState("");

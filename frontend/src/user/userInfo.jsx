@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import EditProfile from "./editProfile";
+import ResearcherForm from "./researcherForm";
+import EditInfo from "./editInfo";
 
 function UserInfo({ onClose }) {
     const [users, setUsers] = useState(null);
     const [error, setError] = useState("");
     const [editProfile, setEditProfile] = useState(false);
+    const [editInfo, setEditInfo] = useState(false);
+    const [form, setForm] = useState(false);
     const [userInfo, setUserInfo] = useState(true);
+    const [application, setApplication] = useState(null);
 
     const navigate = useNavigate();
 
@@ -40,7 +45,33 @@ function UserInfo({ onClose }) {
             }
         };
 
+        const getApplication = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/admin/myApplication`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setApplication(response.data);
+            } catch (error) {
+                if (error.response?.status === 404) {
+                    setApplication(null);
+                    return;
+                }
+
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    localStorage.removeItem("jwt_token");
+                    navigate("/");
+                    return;
+                }
+
+                setError("Failed to load researcher details.");
+            }
+        };
+
         getUsers();
+        getApplication();
     }, [navigate]);
 
     const openEdit = () => {
@@ -48,8 +79,28 @@ function UserInfo({ onClose }) {
         setUserInfo(false);
     };
 
+    const openEditInfo = () => {
+        setEditInfo(true);
+        setUserInfo(false);
+    };
+
+    const openForm = () => {
+        setForm(true);
+        setUserInfo(false);
+    };
+
     const closeEdit = () => {
         setEditProfile(false);
+        setUserInfo(true);
+    };
+
+    const closeEditInfo = () => {
+        setEditInfo(false);
+        setUserInfo(true);
+    };
+
+    const closeForm = () => {
+        setForm(false);
         setUserInfo(true);
     };
 
@@ -73,10 +124,50 @@ function UserInfo({ onClose }) {
                                     {users.email}
                                 </p>
                                 <hr />
+
                                 <p>
                                     <strong>Role: </strong>
                                     {users.role}
                                 </p>
+                                <h5 onClick={openEditInfo}>🖊Change Name and Password</h5>
+
+                                {users.role === "user" && !application && <button onClick={openForm}>Apply as a Researcher!</button>}
+
+                                {application && (
+                                    <div className="application-info">
+                                        <h3>Researcher Application</h3>
+
+                                        <p>
+                                            <strong>Organization: </strong>
+                                            {application.organization}
+                                        </p>
+
+                                        <p>
+                                            <strong>Research Field: </strong>
+                                            {application.researchField}
+                                        </p>
+
+                                        <p>
+                                            <strong>Qualification: </strong>
+                                            {application.qualification}
+                                        </p>
+
+                                        <p>
+                                            <strong>Experience: </strong>
+                                            {application.experience}
+                                        </p>
+
+                                        <p>
+                                            <strong>Reason: </strong>
+                                            {application.reason}
+                                        </p>
+
+                                        <p>
+                                            <strong>Status: </strong>
+                                            {application.status}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             <button onClick={onClose}>Close</button>
@@ -85,6 +176,8 @@ function UserInfo({ onClose }) {
                 </div>
             )}
             {editProfile && <EditProfile users={users} onClose={closeEdit} onUpdated={setUsers} />}
+            {editInfo && <EditInfo users={users} onClose={closeEditInfo} onUpdated={setUsers} />}
+            {form && <ResearcherForm onClose={closeForm} />}
         </div>
     );
 }

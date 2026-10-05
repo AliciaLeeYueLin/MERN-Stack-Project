@@ -1,0 +1,185 @@
+/* .approve-button {
+    background-color: #f8f9fa;
+    color: #28a745;
+}
+
+.reject-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.approved-button {
+    background-color: #28a745;
+    color: white;
+    cursor: default;
+}
+
+.rejected-button {
+    background-color: #dc3545;
+    color: white;
+    cursor: default;
+} */
+
+.application-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin: 60px;
+}
+.application-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: 0.2s ease;
+}
+
+.application-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.application-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 15px;
+}
+
+.application-header h2 {
+    margin: 0 0 5px;
+    font-size: 22px;
+    color: #222;
+}
+
+.application-email {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.pending {
+    background: #fff4d6;
+    color: #a16207;
+}
+
+.status-badge.approved {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-badge.rejected {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.application-details {
+    padding: 18px 0;
+}
+
+.application-details p {
+    margin: 9px 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.application-details strong {
+    color: #222;
+}
+
+.application-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #eeeeee;
+}
+
+.approve-button,
+.reject-button,
+.approved-button,
+.rejected-button {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.approve-button {
+    background: #22c55e;
+    color: white;
+}
+
+.approve-button:hover {
+    background: #16a34a;
+}
+
+.reject-button {
+    background: #ef4444;
+    color: white;
+}
+
+.reject-button:hover {
+    background: #dc2626;
+}
+
+.approved-button {
+    background: #dcfce7;
+    color: #15803d;
+    cursor: default;
+}
+
+.rejected-button {
+    background: #fee2e2;
+    color: #b91c1c;
+    cursor: default;
+}
+
+.user-menu {
+    position: relative;
+}
+
+.user-button {
+    background-color: transparent;
+    border: 2px solid rgb(0, 139, 194);
+    color: rgb(0, 101, 152);
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.user-button:hover {
+    background-color: rgb(0, 139, 194);
+    color: white;
+}
+
+.user-info-box {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 300px;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}

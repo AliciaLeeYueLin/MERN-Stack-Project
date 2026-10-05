@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import EditInfo from "../info/editInfo";
+import "./info.css";
 
 function Info() {
     const [info, setInfo] = useState([]);
     const [error, setError] = useState("");
-    const [selectedInfo, setSelectedInfo] = useState(null);
-    const [isAdmin, setIsAdmin] = useState(false);
     const [isResearcher, setIsResearcher] = useState(false);
-    const [user, setUser] = useState(null);
 
     const navigate = useNavigate();
 
@@ -30,21 +27,13 @@ function Info() {
                     },
                 });
 
-                setUser(response.data);
-
-                if (response.data.role === "admin") {
-                    setIsAdmin(true);
-                }
-
                 if (response.data.role === "researcher") {
                     setIsResearcher(true);
                 }
             } catch (error) {
-                console.log(error);
+                console.log("USER ERROR:", error);
             }
         };
-
-        getUser();
 
         const getInfo = async () => {
             try {
@@ -54,8 +43,12 @@ function Info() {
                     },
                 });
 
+                console.log("INFO DATA:", response.data);
+
                 setInfo(response.data);
             } catch (error) {
+                console.log("INFO ERROR:", error);
+
                 if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                     localStorage.removeItem("jwt_token");
                     navigate("/");
@@ -66,19 +59,14 @@ function Info() {
             }
         };
 
+        getUser();
         getInfo();
     }, [navigate]);
 
-    const handleCancel = () => {
-        navigate("/sharks");
-    };
-
-    const handleUpdated = (updatedInfo) => {
-        setInfo((oldInfo) => oldInfo.map((i) => (i._id === updatedInfo._id ? updatedInfo : i)));
-    };
-
     const resizeGridItem = (item) => {
         const grid = document.querySelector(".info-grid");
+
+        if (!grid) return;
 
         const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue("grid-auto-rows"));
 
@@ -123,24 +111,21 @@ function Info() {
         };
     }, [info]);
 
-    const handleDeleted = (infoId) => {
-    setInfo((oldInfo) =>
-        oldInfo.filter((i) => i._id !== infoId)
-    );
-};
-
     return (
         <div className="info-container">
             <div className="info-header">
                 <h1>Info Area</h1>
+
                 {isResearcher && (
-                    <button className="add-info" onClick={() => navigate(`/info/add/`)}>
+                    <button className="add-info" onClick={() => navigate("/add-new-info")}>
                         +
                     </button>
                 )}
             </div>
 
             {error && <div className="error-message">{error}</div>}
+
+            {info.length === 0 && !error && <p>No information available.</p>}
 
             <div className="info-grid">
                 {info.map((i) => (
@@ -152,20 +137,16 @@ function Info() {
 
                             <h3>Shark: {i.sharkId?.name}</h3>
 
-                            {i.imageUrl && <img src={`${import.meta.env.VITE_API_BASE_URL}${i.imageUrl}`} alt={i.sharkId?.name} />}
+                            {i.imageUrl && <img src={i.imageUrl.startsWith("http") ? i.imageUrl : `${import.meta.env.VITE_API_BASE_URL}${i.imageUrl}`} alt={i.sharkId?.name} />}
 
                             <div className="info-content">
                                 <h3>{i.title}</h3>
 
                                 <p>{i.description}</p>
-
-                                {user?.role === "researcher" && i.userId?._id === user?._id && <button onClick={() => setSelectedInfo(i)}>Edit</button>}
                             </div>
                         </div>
                     </div>
                 ))}
-
-                {selectedInfo && <EditInfo info={selectedInfo} onUpdated={handleUpdated} onDeleted={handleDeleted} onClose={() => setSelectedInfo(null)} />}
             </div>
         </div>
     );

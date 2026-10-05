@@ -1,0 +1,245 @@
+/* Sighting Page */
+
+.sighting-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.sighting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.sighting-header h1 {
+    margin: 0;
+    color: #016b7a;
+    font-size: 36px;
+}
+
+/* Search */
+
+.search-wrapper {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.sighting-filter {
+    width: 50%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    border: 1px solid rgba(0, 70, 90, 0.25);
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.9);
+    color: rgb(40, 40, 40);
+
+    font-size: 14px;
+    outline: none;
+}
+
+.sighting-filter:focus {
+    border-color: #016b7a;
+    box-shadow: 0 0 0 3px rgba(1, 107, 122, 0.12);
+}
+
+/* Sighting Grid */
+.sighting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    align-items: stretch;
+}
+
+.sighting-item {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+    border-radius: 16px;
+
+    box-shadow: 0 5px 15px rgba(0, 70, 80, 0.15);
+
+    transition: 0.3s;
+}
+
+.sighting-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 70, 80, 0.25);
+}
+
+/* Shark Header */
+
+.sighting-user {
+    background-color: #01b5cd;
+
+    padding: 16px 20px;
+
+    color: white;
+
+    border-bottom: 5px solid #8ed1d8;
+
+    border-radius: 16px 16px 0 0;
+}
+
+.sighting-user h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.sighting-card {
+    flex: 1;
+
+    min-height: 280px;
+
+    background: white;
+
+    border-radius: 0 0 16px 16px;
+
+    border: 1px solid #fdfafa;
+    border-top: none;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sighting-card .card-content {
+    padding: 25px;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Push the buttons to the bottom */
+.sighting-card .detail {
+    margin-top: auto;
+}
+
+.sighting-card .sighting-edit {
+    margin-top: 10px;
+}
+
+.sighting-card h3 {
+    margin: 0 0 15px;
+
+    color: #555;
+
+    font-size: 17px;
+}
+
+.sighting-card h2 {
+    margin: 0 0 10px;
+
+    color: rgb(0, 70, 90);
+
+    font-size: 24px;
+}
+
+.sighting-card p {
+    color: rgb(70, 70, 70);
+
+    font-size: 15px;
+
+    line-height: 1.6;
+
+    margin-bottom: 15px;
+}
+
+/* Buttons */
+
+.detail,
+.sighting-edit {
+    width: 100%;
+
+    padding: 10px;
+
+    margin-top: 10px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition: 0.3s;
+}
+
+.detail {
+    border: none;
+
+    background: #a1f0fa;
+
+    color: rgb(19, 0, 0);
+}
+
+.detail:hover {
+    background: #016b7a;
+
+    color: white;
+}
+
+.sighting-edit {
+    border: 1px solid #016b7a;
+
+    background: white;
+
+    color: #016b7a;
+}
+
+.sighting-edit:hover {
+    background: #dceff2;
+}
+
+
+.description-collapsed {
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+
+    margin: 0 0 10px;
+}
+
+.description-expanded {
+    display: block;
+
+    margin: 0 0 10px;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.read-more {
+    width: auto !important;
+
+    align-self: flex-start;
+
+    padding: 5px 0 !important;
+    margin: 0 0 10px !important;
+
+    border: none !important;
+
+    background: transparent !important;
+
+    color: #016b7a !important;
+
+    font-size: 14px !important;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.read-more:hover {
+    background: transparent !important;
+    color: #014f5b !important;
+
+    transform: none !important;
+}

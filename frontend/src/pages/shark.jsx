@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 import EditShark from "../shark/editShark";
 import axios from "axios";
+import "../shark/shark.css"
 
 function Sharks() {
     const [sharks, setSharks] = useState([]);
@@ -16,6 +18,7 @@ function Sharks() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isResearcher, setIsResearcher] = useState(false);
 
+    const [showConfirm, setShowConfirm] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -90,6 +93,8 @@ function Sharks() {
                     Authorization: `Bearer ${token}`,
                 },
             });
+
+            setShowConfirm(null);
 
             setSharks((oldSharks) => oldSharks.filter((shark) => shark._id !== sharkId));
         } catch (error) {
@@ -173,14 +178,18 @@ function Sharks() {
                                     <strong>Habitat:</strong> {shark.habitat}
                                 </p>
                             </div>
-                            <button className="shark-detail" onClick={() => navigate(`/shark/detail/${shark._id}`)}>Explore more about this shark!</button>
+                            <div>
+                                <button className="shark-detail-button" onClick={() => navigate(`/sharks/detail/${shark._id}`)}>
+                                    &rarr; Explore more about this shark!
+                                </button>
+                            </div>
                             {(isAdmin || isResearcher) && (
                                 <button className="shark-edit" onClick={() => setSelectedShark(shark)}>
                                     Edit
                                 </button>
                             )}
                             {(isAdmin || isResearcher) && (
-                                <button className="shark-delete" type="button" onClick={() => handleDelete(shark._id)}>
+                                <button className="shark-delete" type="button" onClick={() => setShowConfirm(shark._id)}>
                                     Delete
                                 </button>
                             )}
@@ -188,7 +197,25 @@ function Sharks() {
                     ))}
                 </div>
             )}
+            {(isAdmin || isResearcher) && (
+                <Modal show={showConfirm !== null} onHide={() => setShowConfirm(null)} centered>
+                    <Modal.Header>
+                        <Modal.Title>Confirm Deletion</Modal.Title>
+                    </Modal.Header>
 
+                    <Modal.Body>Are you sure you want to delete this shark?</Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowConfirm(null)}>
+                            Cancel
+                        </Button>
+
+                        <Button variant="danger" onClick={() => handleDelete(showConfirm)}>
+                            Yes, Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )}
             {selectedShark && <EditShark shark={selectedShark} onUpdated={handleUpdated} onClose={() => setSelectedShark(null)} />}
         </div>
     );

@@ -1,0 +1,204 @@
+.info-container {
+    min-height: 100%;
+    max-width: 100%;
+    margin: 0;
+
+    background:
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.12) 0 5px, transparent 6px), radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.1) 0 8px, transparent 9px), radial-gradient(circle at 70% 65%, rgba(255, 255, 255, 0.08) 0 4px, transparent 5px),
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.08) 0 7px, transparent 8px), linear-gradient(115deg, rgba(247, 250, 109, 0.08) 0%, transparent 18%, transparent 35%, rgb(239, 238, 205) 45%, transparent 60%), linear-gradient(180deg, #016b7a 0%, #07566a 35%, #063f56 70%, #000d14 100%);
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    padding: 20px;
+    font-size: 30px;
+}
+
+.info-header button {
+    background-color: rgb(38, 131, 244);
+    color: rgb(253, 253, 253);
+    font-size: 30px;
+    width: 80px;
+    height: 50px;
+    border-radius: 10px;
+}
+
+.info-grid {
+    column-count: 3;
+    column-gap: 22px;
+    padding: 20px 30px 50px;
+    margin: 0;
+}
+
+.content {
+    break-inside: avoid;
+    margin-bottom: 22px;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.96);
+
+    border-radius: 14px;
+    overflow: hidden;
+
+    border: 1px solid rgba(220, 239, 242, 0.8);
+
+    box-shadow: 0 3px 12px rgba(0, 40, 50, 0.12);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 40, 50, 0.18);
+}
+
+.info-user {
+    background: linear-gradient(135deg, #01aabd, #016b7a);
+    padding: 13px 18px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.info-user h2 {
+    margin: 0;
+    color: white;
+}
+
+.info-card > h3 {
+    margin: 16px 18px 10px;
+    color: #016b7a;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 20px;
+}
+
+.info-card > img {
+    display: block;
+    width: calc(100% - 50px);
+    height: 100%;
+    padding: 20px;
+    margin: 5px 5px 20px;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 70, 80, 0.15);
+}
+
+.info-content h3 {
+    margin: 0 0 8px;
+    color: #164e59;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 20px;
+}
+
+.info-content p {
+    margin: 0;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.65;
+    padding: 20px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.info-content button {
+
+    margin: 8px 16px;
+padding: 10px;
+    border: 1px solid #016b7a;
+    border-radius: 7px;
+
+    background: transparent;
+    color: #016b7a;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.info-content button:hover {
+    background: #016b7a;
+    color: white;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 1100px) {
+    .info-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 700px) {
+    .info-grid {
+        column-count: 1;
+        padding: 15px;
+    }
+}
+
+/* Sidenav */
+.app-with-sidenav {
+    display: flex;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.info-layout {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    align-items: stretch;
+}
+
+
+.sidenav {
+    width: 240px;
+    flex-shrink: 0;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--clay-700), var(--clay-500));
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 4px 0 14px rgba(124, 63, 29, 0.18);
+}
+
+.sidenav-brand {
+    color: #197300;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    padding: 6px 14px 22px;
+}
+
+.sidenav a {
+    color: #006979;
+    text-decoration: none;
+    padding: 11px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    border-radius: 10px;
+    transition:
+        background-color 0.18s,
+        color 0.18s;
+}
+
+.sidenav a:hover {
+    background-color: rgba(255, 255, 255, 0.584);
+    color: #002c5f;
+    text-decoration: none;
+}
+
+.sidenav a.active {
+    background-color: rgb(255, 255, 255);
+    color: #002c5f;
+}

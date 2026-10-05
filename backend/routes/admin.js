@@ -17,6 +17,18 @@ router.get("/application", auth.authenticate, async (req, res) => {
     }
 });
 
+router.get("/myApplication", auth.authenticate, async (req, res) => {
+    try {
+      const findApplicationById = await Research.findOne({
+    userId: req.user._id
+});
+
+        res.json(findApplicationById);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
 router.put("/application/:id/approve", auth.authenticate, async (req, res) => {
     try {
         const application = await Research.findById(req.params.id);

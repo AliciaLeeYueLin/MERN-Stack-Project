@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import EditSighting from "../sighting/editSighting";
+import "../sighting/sighting.css";
 
 function Sighting() {
     const [sightings, setSightings] = useState([]);
     const [error, setError] = useState("");
     const [selectedSighting, setSelectedSighting] = useState(null);
     const [search, setSearch] = useState("");
+    const [expandedSighting, setExpandedSighting] = useState(null);
 
     const navigate = useNavigate();
 
@@ -39,7 +41,7 @@ function Sighting() {
                     return;
                 }
 
-                setError("Failed to load locations.");
+                setError("Failed to load sightings.");
             }
         };
 
@@ -55,34 +57,46 @@ function Sighting() {
     };
 
     return (
-        <div className="location-container">
-            <div className="location-header">
+        <div className="sighting-container">
+            <div className="sighting-header">
                 <h1>Sighting</h1>
 
-                <button className="add" onClick={() => navigate(`/sighting/add/`)}>
+                <button className="add" onClick={() => navigate("/sighting/add")}>
                     Add
                 </button>
             </div>
 
             {error && <div className="error-message">{error}</div>}
+
             <div className="search-wrapper">
                 <input type="text" placeholder="Search Shark OR Location" value={search} onChange={(e) => setSearch(e.target.value)} className="sighting-filter" />
             </div>
+
             <div className="sighting-grid">
                 {sightings.map((sighting) => (
-                    <div key={sighting._id}>
-                        <div className="card-content">
-                            <div className="sighting-user">
-                                <h2>Shark: {sighting.sharkId?.name}</h2>
-                            </div>
-                            <div className="sighting-card">
+                    <div className="sighting-item" key={sighting._id}>
+                        <div className="sighting-user">
+                            <h2>Shark: {sighting.sharkId?.name}</h2>
+                        </div>
+
+                        <div className="sighting-card">
+                            <div className="card-content">
                                 <h3>Location: {sighting.locationId?.name}</h3>
-                                <h2>{sighting.description}</h2>
+
+                                <h4 className={expandedSighting === sighting._id ? "description-expanded" : "description-collapsed"}>{sighting.description}</h4>
+
+                                {sighting.description?.length > 120 && (
+                                    <button type="button" className="read-more" onClick={() => setExpandedSighting(expandedSighting === sighting._id ? null : sighting._id)}>
+                                        {expandedSighting === sighting._id ? "Read Less" : "Read More"}
+                                    </button>
+                                )}
+
                                 <p>Date: {new Date(sighting.date).toLocaleDateString()}</p>
 
                                 <button className="detail" onClick={() => navigate(`/sighting/detail/${sighting._id}`)}>
                                     View Detail
                                 </button>
+
                                 <button className="sighting-edit" onClick={() => setSelectedSighting(sighting)}>
                                     Edit
                                 </button>
@@ -91,8 +105,8 @@ function Sighting() {
                     </div>
                 ))}
             </div>
+
             {selectedSighting && <EditSighting sighting={selectedSighting} onUpdated={handleUpdated} onDeleted={handleDeleted} onClose={() => setSelectedSighting(null)} />}
-            {/* onUpdated={handleUpdated} */}
         </div>
     );
 }

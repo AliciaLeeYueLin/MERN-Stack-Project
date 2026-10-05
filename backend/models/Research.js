@@ -9,7 +9,6 @@ const ResearchSchema = new mongoose.Schema({
     organization:{
         type: String,
         required:  true,
-        unique: true
     },
     researchField:{
         type: String,

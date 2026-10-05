@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import EditLocation from "../location/editLocation";
+import "../location/location.css";
+
+
 
 function Locations() {
     const [locations, setLocations] = useState([]);
@@ -9,6 +12,7 @@ function Locations() {
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isResearcher, setIsResearcher] = useState(false);
+    
 
     const navigate = useNavigate();
 
@@ -76,7 +80,7 @@ function Locations() {
     return (
         <div className="location-container">
             <div className="location-header">
-                <h1>Location</h1>
+                <h1>Location Shark Spotted 👀</h1>
 
                 <button className="add" onClick={() => navigate(`/location/add/`)}>
                     Add

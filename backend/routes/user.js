@@ -121,6 +121,44 @@ router.patch("/profile",upload.single("profile"), auth.authenticate, async (req,
 }
 )
 
+router.patch("/info", auth.authenticate, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({
+                error: "User not found"
+            });
+        }
+
+        const { name, password } = req.body;
+
+        if (name !== undefined) {
+            user.name = name;
+        }
+
+        let passwordChanged = false;
+
+        if (password !== undefined && password.trim() !== "") {
+            user.password = await bcrypt.hash(password, 10);
+            passwordChanged = true;
+        }
+
+        await user.save();
+
+        res.json({
+            message: "Profile updated successfully. You will be redirected to the login page",
+            user,
+            passwordChanged
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+});
+
 // router.get("/users", auth.authenticate, async (req, res) => {
 //     try {
 //         const user = req.user;

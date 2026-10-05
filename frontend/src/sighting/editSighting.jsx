@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
+import "./sighting.css"
 
 function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
     const [sightings, setSightings] = useState({
@@ -23,6 +25,7 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
     const [originalSighting] = useState(sighting);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
+    const [showConfirm, setShowConfirm] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -136,6 +139,7 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            setShowConfirm(null);
 
             setMessage("Sighting deleted successfully.");
             onDeleted(sighting._id);
@@ -272,13 +276,31 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
                     </div>
 
                     <button type="submit">Update Sighting</button>
-                    <button type="button" onClick={handleDelete}>
+                    <button type="button" onClick={() => setShowConfirm(sighting._id)}>
                         Delete Sighting
                     </button>
+
                     <button type="button" onClick={onClose}>
                         Cancel
                     </button>
                 </form>
+                <Modal show={showConfirm !== null} onHide={() => setShowConfirm(null)} centered>
+                    <Modal.Header>
+                        <Modal.Title>Confirm Deletion</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>Are you sure you want to delete this sighting?</Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowConfirm(null)}>
+                            Cancel
+                        </Button>
+
+                        <Button variant="danger" onClick={() => handleDelete(showConfirm)}>
+                            Yes, Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </div>
     );
