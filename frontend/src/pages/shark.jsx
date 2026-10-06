@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import EditShark from "../shark/editShark";
 import axios from "axios";
-import "../shark/shark.css"
+import "../shark/shark.css";
 
 function Sharks() {
     const [sharks, setSharks] = useState([]);
+    const [habitats, setHabitats] = useState([]);
 
     const [search, setSearch] = useState("");
     const [diet, setDiet] = useState("All");
-    const [habitat, setHabitat] = useState("All");
+    const [habitatId, setHabitatId] = useState("All");
     const [sort, setSort] = useState("nameAsc");
 
     const [error, setError] = useState("");
@@ -51,6 +52,22 @@ function Sharks() {
 
         getUser();
 
+        const getHabitats = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/habitat/habitats`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setHabitats(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        getHabitats();
+
         const getSharks = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/shark/sharks`, {
@@ -60,7 +77,7 @@ function Sharks() {
                     params: {
                         search: search,
                         diet: diet,
-                        habitat: habitat,
+                        habitat: habitatId,
                         sort: sort,
                     },
                 });
@@ -78,7 +95,7 @@ function Sharks() {
         };
 
         getSharks();
-    }, [search, diet, habitat, sort, navigate]);
+    }, [search, diet, habitatId, sort, navigate]);
 
     const handleUpdated = (updatedShark) => {
         setSharks((oldSharks) => oldSharks.map((shark) => (shark._id === updatedShark._id ? updatedShark : shark)));
@@ -136,13 +153,14 @@ function Sharks() {
                         <option value="Planktivore">Planktivore</option>
                     </select>
 
-                    <select className="filter-select" value={habitat} onChange={(e) => setHabitat(e.target.value)}>
+                    <select className="filter-select" value={habitatId} onChange={(e) => setHabitatId(e.target.value)}>
                         <option value="All">All Habitats</option>
-                        <option value="Coastal">Coastal</option>
-                        <option value="Coral Reef">Coral Reef</option>
-                        <option value="Open Ocean">Open Ocean</option>
-                        <option value="Deep Sea">Deep Sea</option>
-                        <option value="Estuary">Estuary</option>
+
+                        {habitats.map((habitat) => (
+                            <option key={habitat._id} value={habitat._id}>
+                                {habitat.name}
+                            </option>
+                        ))}
                     </select>
 
                     <select className="filter-select" value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -175,7 +193,7 @@ function Sharks() {
                                 </p>
 
                                 <p>
-                                    <strong>Habitat:</strong> {shark.habitat}
+                                    <strong>Habitat:</strong> {shark.habitatId?.name || "Unknown"}
                                 </p>
                             </div>
                             <div>

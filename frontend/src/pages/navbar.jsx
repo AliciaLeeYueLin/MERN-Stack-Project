@@ -90,6 +90,12 @@ const Navigation = () => {
                     </li>
 
                     <li className="nav-item">
+                        <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/habitat">
+                            Habitat
+                        </NavLink>
+                    </li>
+
+                    <li className="nav-item">
                         <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/location">
                             Location
                         </NavLink>

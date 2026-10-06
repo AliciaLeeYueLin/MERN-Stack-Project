@@ -18,32 +18,39 @@ import NewSighting from "./sighting/newSighting";
 import Footer from "./pages/footer";
 import SharkDetail from "./shark/sharkDetails";
 import InfoNavbar from "./pages/infoNavbar";
+import Habitats from "./habitat/habitat";
 
 function App() {
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Register />} />
-                <Route path="/login" element={<Login />} />
+            <div className="app">
+                <main className="main-content">
+                    <Routes>
+                        <Route path="/" element={<Register />} />
+                        <Route path="/login" element={<Login />} />
 
-                <Route element={<ProtectedRoute />}>
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/sharks" element={<Shark />} />
-                    <Route path="/sharks/add" element={<NewShark />} />
-                    <Route path="/sharks/edit/:id" element={<EditShark />} />
-                    <Route path="/sharks/detail/:id" element={<SharkDetail />} />
-                    <Route path="/location" element={<Location />} />
-                    <Route path="/location/add" element={<NewLocation />} />
-                    <Route path="/request" element={<Approve />} />
-                    <Route path="/info" element={<InfoNavbar />} />
-                    <Route path="/info-edit" element={<InfoNavbar />} />
-                    <Route path="/add-new-info" element={<InfoNavbar />} />
-                    <Route path="/sighting" element={<Sighting />} />
-                    <Route path="/sighting/add" element={<NewSighting />} />
-                    <Route path="/sighting/detail/:id" element={<SightingDetail />} />
-                </Route>
-            </Routes>
-            <Footer />
+                        <Route element={<ProtectedRoute />}>
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/sharks" element={<Shark />} />
+                            <Route path="/sharks/add" element={<NewShark />} />
+                            <Route path="/sharks/edit/:id" element={<EditShark />} />
+                            <Route path="/sharks/detail/:id" element={<SharkDetail />} />
+                            <Route path="/habitat" element={<Habitats />} />
+                            <Route path="/location" element={<Location />} />
+                            <Route path="/location/add" element={<NewLocation />} />
+                            <Route path="/request" element={<Approve />} />
+                            <Route path="/info" element={<InfoNavbar />} />
+                            <Route path="/info-edit" element={<InfoNavbar />} />
+                            <Route path="/add-new-info" element={<InfoNavbar />} />
+                            <Route path="/sighting" element={<Sighting />} />
+                            <Route path="/sighting/add" element={<NewSighting />} />
+                            <Route path="/sighting/detail/:id" element={<SightingDetail />} />
+                        </Route>
+                    </Routes>
+                </main>
+
+                <Footer />
+            </div>
         </BrowserRouter>
     );
 }

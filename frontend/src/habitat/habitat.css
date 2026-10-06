@@ -1,0 +1,166 @@
+.habitats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.habitats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.habitats-header h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.add-habitat-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #0077b6;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.add-habitat-button:hover {
+    background-color: #005f8f;
+}
+
+/* Add Habitat Form */
+
+.add-habitat-form {
+    display: flex;
+    align-items: end;
+    gap: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+}
+
+.add-habitat-form .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.add-habitat-form label {
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.add-habitat-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.add-habitat-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background-color: #0077b6;
+    color: white;
+    cursor: pointer;
+}
+
+.add-habitat-form button:hover {
+    background-color: #005f8f;
+}
+
+/* Habitat Cards */
+
+.habitat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.habitat-card {
+    padding: 25px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.habitat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.habitat-card h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+/* Messages */
+
+.success-message {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.error-message {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Empty state */
+
+.habitats-container > h2 {
+    text-align: center;
+    margin-top: 50px;
+    color: #777;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .habitat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .habitats-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .add-habitat-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .habitat-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.delete-habitat-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #dc3545;
+    color: white;
+    cursor: pointer;
+}
+
+.delete-habitat-button:hover {
+    background-color: #b02a37;
+}

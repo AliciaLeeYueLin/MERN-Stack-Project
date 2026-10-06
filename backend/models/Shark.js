@@ -33,8 +33,9 @@ const SharkSchema = new mongoose.Schema({
         default: "",
     },
 
-    habitat: {
-        type: String,
+    habitatId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Habitat",
         required: true,
     },
 

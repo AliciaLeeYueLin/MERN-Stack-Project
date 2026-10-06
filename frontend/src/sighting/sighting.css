@@ -22,7 +22,6 @@
 /* Search */
 
 .search-wrapper {
-    width: 100%;
     margin-bottom: 25px;
 }
 
@@ -35,7 +34,6 @@
     border: 1px solid rgba(0, 70, 90, 0.25);
     border-radius: 10px;
 
-    background: rgba(255, 255, 255, 0.9);
     color: rgb(40, 40, 40);
 
     font-size: 14px;
@@ -197,7 +195,6 @@
     background: #dceff2;
 }
 
-
 .description-collapsed {
     display: -webkit-box;
     line-clamp: 3;
@@ -242,4 +239,198 @@
     color: #014f5b !important;
 
     transform: none !important;
+}
+
+/* Sighting Detail Page */
+
+.sighting-detail-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.sighting-detail-container > div {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 70, 80, 0.15);
+}
+
+.sighting-container h1 {
+    text-align: center;
+    color: #016b7a;
+    margin-bottom: 30px;
+    font-size: 36px;
+}
+
+/* Sighting Detail */
+
+.sighting-detail h2 {
+    color: #016b7a;
+    margin-bottom: 10px;
+}
+
+.sighting-detail h3 {
+    color: #555;
+    margin: 8px 0;
+}
+
+.sighting-detail p {
+    color: #555;
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+/* Shark Conditions */
+
+/* Shark Condition */
+
+.shark-conditon {
+    margin-top: 30px;
+    padding: 25px;
+    background: #f4fbfc;
+    border-radius: 18px;
+    border: 1px solid #d5eef2;
+    box-shadow: 0 6px 18px rgba(0, 70, 80, 0.08);
+}
+
+.shark-conditon p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 0;
+    padding: 16px 18px;
+
+    background: white;
+    border-bottom: 1px solid #e5eef0;
+
+    color: #555;
+    font-size: 16px;
+
+    transition: 0.2s ease;
+}
+
+.shark-conditon p:first-child {
+    border-radius: 10px 10px 0 0;
+}
+
+.shark-conditon p:last-child {
+    border-radius: 0 0 10px 10px;
+    border-bottom: none;
+}
+
+.shark-conditon p:hover {
+    background: #eefafd;
+    padding-left: 23px;
+}
+
+/* Make the labels stand out */
+
+.shark-conditon p {
+    font-weight: 500;
+}
+
+.shark-conditon p::first-line {
+    color: #016b7a;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .shark-conditon {
+        padding: 15px;
+    }
+
+    .shark-conditon p {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+/* Measurements */
+
+.condition {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+
+    background-color: #d0f4f9;
+    padding: 30px;
+    border-radius: 10px;
+
+    box-shadow: 12px 12px teal;
+}
+
+.measurement {
+    width: 100%;
+}
+
+.measurement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.measurement-header span {
+    font-weight: 600;
+}
+
+.measurement-header strong {
+    font-size: 18px;
+}
+
+.progress-line {
+    width: 100%;
+    height: 20px;
+
+    background: #dceff2;
+    border-radius: 10px;
+    overflow: hidden;
+
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.468);
+}
+
+.progress-fill {
+    height: 100%;
+
+    background: #055968;
+    border-radius: 10px;
+
+    transition: width 0.5s ease;
+}
+
+.measurement-scale {
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 12px;
+    color: #777;
+
+    margin-top: 5px;
+}
+
+/* Back Button */
+
+.sighting-container button {
+    margin-top: 25px;
+    padding: 10px 25px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #016b7a;
+    color: white;
+
+    font-size: 16px;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.sighting-container button:hover {
+    background: #014f5b;
+    transform: translateY(-2px);
 }

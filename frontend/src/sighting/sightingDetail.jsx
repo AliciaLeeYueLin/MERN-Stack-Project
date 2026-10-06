@@ -43,7 +43,7 @@ function SightingDetail() {
     }, [navigate, id]);
 
     return (
-        <div className="sighting-container">
+        <div className="sighting-detail-container">
             <div>
                 <h1>Details</h1>
 

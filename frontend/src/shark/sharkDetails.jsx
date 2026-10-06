@@ -68,7 +68,7 @@ function SharkDetail() {
 
                 <div className="detail-section">
                     <h3>Habitat</h3>
-                    <p className="detail-label">{detail.habitat}</p>
+                    <p className="detail-label">{detail.habitatId?.name}</p>
                     <p>{detail.habitatDetails}</p>
                 </div>
 

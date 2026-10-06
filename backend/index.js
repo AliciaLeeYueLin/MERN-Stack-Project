@@ -9,6 +9,7 @@ const researchRoutes = require("./routes/research")
 const adminRoutes = require("./routes/admin")
 const sightingRoutes = require("./routes/sighting")
 const infoRoutes = require("./routes/info")
+const habitatRoutes = require("./routes/habitat")
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth")
 require("dotenv").config();
@@ -40,6 +41,7 @@ app.use("/research", researchRoutes)
 app.use("/admin", adminRoutes);
 app.use("/sighting", sightingRoutes);
 app.use("/info", infoRoutes);
+app.use("/habitat", habitatRoutes);
 
 
 app.get("/", (req, res) => {

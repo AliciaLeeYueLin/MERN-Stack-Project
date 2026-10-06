@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./shark.css";
@@ -13,7 +13,7 @@ function NewShark() {
         averageSize: "",
         diet: "",
         dietDetails: "",
-        habitat: "",
+        habitatId: "",
         habitatDetails: "",
 
         reproduction: {
@@ -47,6 +47,7 @@ function NewShark() {
 
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
+    const [habitats, setHabitats] = useState([]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -165,7 +166,7 @@ function NewShark() {
         formData.append("averageSize", sharks.averageSize);
         formData.append("diet", sharks.diet);
         formData.append("dietDetails", sharks.dietDetails);
-        formData.append("habitat", sharks.habitat);
+        formData.append("habitatId", sharks.habitatId);
         formData.append("habitatDetails", sharks.habitatDetails);
 
         formData.append("reproduction", JSON.stringify(sharks.reproduction));
@@ -202,6 +203,40 @@ function NewShark() {
             setError(error.response?.data?.error || "Failed to add shark.");
         }
     };
+
+    useEffect(() => {
+        const getHabitats = async () => {
+            const token = localStorage.getItem("jwt_token");
+
+            if (!token || token.trim() === "") {
+                localStorage.removeItem("jwt_token");
+                navigate("/");
+                return;
+            }
+
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/habitat/habitats`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setHabitats(response.data);
+            } catch (error) {
+                console.log("GET HABITATS ERROR:", error);
+
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    localStorage.removeItem("jwt_token");
+                    navigate("/");
+                    return;
+                }
+
+                setError("Failed to load habitats.");
+            }
+        };
+
+        getHabitats();
+    }, [navigate]);
 
     return (
         <div className="add-sharks-container">
@@ -258,7 +293,15 @@ function NewShark() {
 
                     <div className="form-group">
                         <label>Habitat</label>
-                        <input type="text" name="habitat" value={sharks.habitat} onChange={handleChange} />
+                        <select name="habitatId" value={sharks.habitatId} onChange={handleChange}>
+                            <option value="">Select a habitat</option>
+
+                            {habitats.map((habitat) => (
+                                <option key={habitat._id} value={habitat._id}>
+                                    {habitat.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     <div className="form-group">
