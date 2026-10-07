@@ -116,11 +116,6 @@ function Info() {
             <div className="info-header">
                 <h1>Info Area</h1>
 
-                {isResearcher && (
-                    <button className="add-info" onClick={() => navigate("/add-new-info")}>
-                        +
-                    </button>
-                )}
             </div>
 
             {error && <div className="error-message">{error}</div>}

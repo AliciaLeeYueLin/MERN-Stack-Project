@@ -122,7 +122,7 @@ function SharkDetail() {
                     )}
                 </div>
 
-                <Button variant="outline-primary" onClick={() => setOpenChar(!openChar)}>
+                <Button className="show" variant="outline-primary" onClick={() => setOpenChar(!openChar)}>
                     {openChar ? "Hide Characteristics" : "Show Characteristics"}
                 </Button>
 

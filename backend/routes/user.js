@@ -5,11 +5,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const auth = require("../middleware/auth");
-const multer = require("multer")
+const multer = require("multer");
 
-const path = require("path")
-
-
+const path = require("path");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -17,11 +15,8 @@ const storage = multer.diskStorage({
     },
 
     filename: (req, file, cb) => {
-        cb(
-            null,
-            Date.now() + path.extname(file.originalname)
-        );
-    }
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
 });
 
 const upload = multer({ storage });
@@ -31,14 +26,14 @@ router.post("/register", async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
-        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS); 
+        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS);
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const user = new User({
             name: name,
             email: email,
             password: hashedPassword,
-            role: role
+            role: role,
         });
 
         await user.save();
@@ -62,10 +57,9 @@ router.post("/login", async (req, res) => {
             throw new Error("Invalid email or password");
         }
 
-       
         const token = jwt.sign(
             {
-                userId: user._id, 
+                userId: user._id,
             },
             process.env.JWT_SECRET,
             {
@@ -95,31 +89,30 @@ router.get("/user", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/profile",upload.single("profile"), auth.authenticate, async (req, res) => {
-    try{
-        const user = await User.findById(req.user._id)
+router.patch("/profile", upload.single("profile"), auth.authenticate, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
 
-        if(!user){
+        if (!user) {
             return res.status(404).json({
-                error: "User not found"
-            })
+                error: "User not found",
+            });
         }
 
-        if(req.file){
-            user.profile = `/uploads/${req.file.filename}`
+        if (req.file) {
+            user.profile = `/uploads/${req.file.filename}`;
         }
 
         await user.save();
 
         res.json({
             message: "Profile updated successfully",
-            user
-        })
-    } catch(error){
-        res.status(400).json({ error: error.message })
+            user,
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
-}
-)
+});
 
 router.patch("/info", auth.authenticate, async (req, res) => {
     try {
@@ -127,7 +120,7 @@ router.patch("/info", auth.authenticate, async (req, res) => {
 
         if (!user) {
             return res.status(404).json({
-                error: "User not found"
+                error: "User not found",
             });
         }
 
@@ -149,34 +142,17 @@ router.patch("/info", auth.authenticate, async (req, res) => {
         res.json({
             message: "Profile updated successfully. You will be redirected to the login page",
             user,
-            passwordChanged
+            passwordChanged,
         });
-
     } catch (error) {
         res.status(400).json({
-            error: error.message
+            error: error.message,
         });
     }
 });
 
-// router.get("/users", auth.authenticate, async (req, res) => {
-//     try {
-//         const user = req.user;
-//         if (user.role !== "user") {
-//             const users = await User.find();
-//             if (!users) throw new Error("No users found!");
-//             res.json(users);
-//         } else {
-//             throw new Error("User should not be able to call this API");
-//         }
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// });
-
 router.get("/admin", auth.authenticate, async (req, res) => {
     try {
-        // console.log(user.role);
         const user = req.user;
         if (user.role !== "admin") {
             const users = await User.find();

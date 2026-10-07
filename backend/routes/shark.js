@@ -17,22 +17,16 @@ router.get("/sharks", auth.authenticate, async (req, res) => {
 
         const query = {};
 
-        // Search by name or scientific name
         if (search) {
             query.$or = [{ name: { $regex: search, $options: "i" } }, { scientificName: { $regex: search, $options: "i" } }];
         }
 
-        // Filter by diet
         if (diet && diet !== "All") {
             query.diet = diet;
         }
-
-        // Filter by habitat
         if (habitat && habitat !== "All") {
             query.habitatId = habitat;
         }
-
-        // Sort
         let sortOption = {};
 
         if (sort === "nameAsc") {
@@ -91,8 +85,6 @@ router.post("/shark", auth.authenticate, upload.single("image"), async (req, res
 
         res.status(201).json(savedShark);
     } catch (error) {
-        console.log("ADD SHARK ERROR:", error);
-
         res.status(400).json({
             error: error.message,
         });
@@ -145,13 +137,12 @@ router.patch("/sharks/:id", auth.authenticate, upload.single("image"), async (re
 
         res.json(updateShark);
     } catch (error) {
-        console.log("UPDATE SHARK ERROR:", error);
-
         res.status(400).json({
             error: error.message,
         });
     }
 });
+
 router.patch("/shark/bulk", auth.authenticate, async (req, res) => {
     try {
         const sharks = req.body;
@@ -167,11 +158,11 @@ router.patch("/shark/bulk", auth.authenticate, async (req, res) => {
         for (const shark of sharks) {
             const { _id, ...updateData } = shark;
 
-            if (!_id) {
-                continue;
-            }
+            if (!_id) {continue;}
 
-            const updatedShark = await Shark.findByIdAndUpdate(_id, updateData, {
+            const updatedShark = await Shark.findByIdAndUpdate(
+                _id, updateData, 
+            {
                 new: true,
                 runValidators: true,
             });
@@ -207,5 +198,4 @@ router.delete("/shark/:id", auth.authenticate, async (req, res) => {
     }
 });
 
-// router.get("/")
 module.exports = router;

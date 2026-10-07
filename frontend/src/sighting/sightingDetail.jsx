@@ -117,7 +117,7 @@ function SightingDetail() {
                     </div>
                 )}
 
-                <button onClick={() => navigate("/sighting")}>← Back</button>
+                <button className="show" onClick={() => navigate("/sighting")}>← Back</button>
             </div>
         </div>
     );

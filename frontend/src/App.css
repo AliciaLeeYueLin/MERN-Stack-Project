@@ -538,29 +538,34 @@ body,
     background: #f0f9fa;
 }
 
-/* Detail */
-
-.detail,
-.sighting-edit {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-
-    border-radius: 8px;
-    cursor: pointer;
-
-    font-size: 15px;
-    transition: 0.3s;
-}
-
-.detail {
+.show {
+    padding: 10px 20px;
     border: none;
-    background: #a1f0fa;
-    color: rgb(19, 0, 0);
+    border-radius: 8px;
+    background-color: #000b3e;
+    color: white;
+    font-size: 15px;
+    transition: 0.2s;
 }
 
-.detail:hover {
-    background: #014f5b;
+.remove {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #a32822;
+    color: white;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.update {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgb(181, 53, 220);
+    color: white;
+    font-size: 15px;
+    transition: 0.2s;
 }
 
 /* Messages */

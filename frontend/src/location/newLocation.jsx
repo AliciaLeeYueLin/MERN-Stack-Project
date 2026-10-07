@@ -39,7 +39,8 @@ function NewLocation() {
         }
 
         try {
-            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/location/location/`, locations, {
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/location/location/`, 
+                locations, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -242,8 +243,8 @@ function NewLocation() {
 };
 
     return (
-        <div className="add-locations-container">
-            <div className="add-locations-card">
+        <div className="add-sharks-container">
+            <div className="add-sharks-card">
                 <h1>Add Location</h1>
 
                 {error && <p className="error">{error}</p>}
@@ -266,7 +267,7 @@ function NewLocation() {
                         <input type="text" name="region" value={locations.region} onChange={handleChange} />
                     </div>
 
-                    <button type="button" onClick={handleFindCoordinates}>
+                    <button className="find" type="button" onClick={handleFindCoordinates}>
                         🔎 Find Coordinates
                     </button>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
-import "./sighting.css"
+import "./sighting.css";
 
 function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
     const [sightings, setSightings] = useState({
@@ -274,15 +274,18 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
 
                         <textarea name="notes" value={sightings.notes} onChange={handleChange} />
                     </div>
+                    <div className="buttons">
+                        <button className="show" type="submit">
+                            Update Sighting
+                        </button>
+                        <button className="update" type="button" onClick={() => setShowConfirm(sighting._id)}>
+                            Delete Sighting
+                        </button>
 
-                    <button type="submit">Update Sighting</button>
-                    <button type="button" onClick={() => setShowConfirm(sighting._id)}>
-                        Delete Sighting
-                    </button>
-
-                    <button type="button" onClick={onClose}>
-                        Cancel
-                    </button>
+                        <button className="remove" type="button" onClick={onClose}>
+                            Cancel
+                        </button>
+                    </div>
                 </form>
                 <Modal show={showConfirm !== null} onHide={() => setShowConfirm(null)} centered>
                     <Modal.Header>

@@ -32,7 +32,9 @@ router.post("/habitat", auth.authenticate, async (req, res) => {
     try {
         const { name } = req.body;
 
-        const newHabitat = new Habitat({ name });
+        const newHabitat = new Habitat({
+            name,
+        });
 
         const savedHabitat = await newHabitat.save();
 
@@ -46,7 +48,9 @@ router.patch("/habitat", auth.authenticate, async (req, res) => {
     try {
         const { name } = req.body;
 
-        const newHabitat = new Habitat({ name });
+        const newHabitat = new Habitat({
+            name,
+        });
 
         const savedHabitat = await newHabitat.save();
 
@@ -56,17 +60,17 @@ router.patch("/habitat", auth.authenticate, async (req, res) => {
     }
 });
 
-router.delete("/habitat/:id", auth.authenticate, async(req, res) => {
-    try{
-        const {id} = req.params;
+router.delete("/habitat/:id", auth.authenticate, async (req, res) => {
+    try {
+        const { id } = req.params;
 
-        const sharkUsedHabitat = await Shark.findOne({habitatId: id})
+        const sharkUsedHabitat = await Shark.findOne({ habitatId: id });
 
-        if(sharkUsedHabitat){
-            return res.status(400).json({ error: `Cannot delete this habitat because it is being used by ${sharkUsedHabitat.name}.`})
+        if (sharkUsedHabitat) {
+            return res.status(400).json({ error: `Cannot delete this habitat because it is being used by ${sharkUsedHabitat.name}.` });
         }
-        
-        const deletedHabitat = await Habitat.findByIdAndDelete(id)
+
+        const deletedHabitat = await Habitat.findByIdAndDelete(id);
 
         if (!deletedHabitat) {
             return res.status(404).json({
@@ -77,12 +81,12 @@ router.delete("/habitat/:id", auth.authenticate, async(req, res) => {
         res.json({
             message: "Habitat deleted successfully.",
         });
+        
     } catch (error) {
         res.status(400).json({
             error: error.message,
         });
     }
-    
-})
+});
 
 module.exports = router;

@@ -13,10 +13,10 @@ router.get("/locations", auth.authenticate, async (req, res) => {
         res.status(401).json({ error: error.message });
     }
 });
+
 router.post("/location", auth.authenticate, async (req, res) => {
     try {
         const { name, country, region, description, latitude, longitude } = req.body;
-
         const newLocation = new Location({
             name,
             country,
@@ -34,6 +34,7 @@ router.post("/location", auth.authenticate, async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
+
 router.post("/location/bulk", auth.authenticate, async (req, res) => {
     try {
         const locations = await Location.insertMany(req.body);
@@ -46,13 +47,19 @@ router.post("/location/bulk", auth.authenticate, async (req, res) => {
 
 router.patch("/location/:id", auth.authenticate, async (req, res) => {
     try {
-        const updateLocation = await Location.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updateLocation = await Location.findByIdAndUpdate(
+            req.params.id, req.body, 
+            {
+                 new: true 
+            }
+            );
 
         res.json(updateLocation);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
+
 router.delete("/location/:id", auth.authenticate, async (req, res) => {
     try {
         const deletedLocation = await Location.findByIdAndDelete(req.params.id);

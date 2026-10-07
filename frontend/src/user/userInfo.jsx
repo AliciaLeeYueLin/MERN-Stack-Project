@@ -13,6 +13,7 @@ function UserInfo({ onClose }) {
     const [form, setForm] = useState(false);
     const [userInfo, setUserInfo] = useState(true);
     const [application, setApplication] = useState(null);
+    const [showMessage, setShowMessage] = useState(true)
 
     const navigate = useNavigate();
 
@@ -133,7 +134,14 @@ function UserInfo({ onClose }) {
 
                                 {users.role === "user" && !application && <button onClick={openForm}>Apply as a Researcher!</button>}
 
-                                {application && (
+                                {application?.status === "rejected" && showMessage && (
+                                    <div className="rejected-message">
+                                        <h4>Sorry, your Application has been rejected </h4>
+                                        <button className="close" onClick={() => setShowMessage(false)}>X</button>
+                                    </div>
+                                )}
+
+                                {users.role === "researcher" && application && (
                                     <div className="application-info">
                                         <h3>Researcher Application</h3>
 

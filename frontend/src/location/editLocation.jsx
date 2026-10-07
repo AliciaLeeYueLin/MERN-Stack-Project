@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import "./location.css"
+import "./location.css";
 
 import axios from "axios";
 
@@ -47,14 +47,12 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
             longitude: Number(locations.longitude),
         };
 
-
         try {
             const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/location/location/${location._id}`, changedFields, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
 
             setMessage("Location updated successfully.");
 
@@ -82,6 +80,7 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
 
     const handleDelete = async () => {
         const token = localStorage.getItem("jwt_token");
+        
         if (!token || token.trim() === "") {
             localStorage.removeItem("jwt_token");
             onClose();
@@ -268,7 +267,7 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
                         <input type="text" name="region" value={locations.region} onChange={handleChange} />
                     </div>
 
-                    <button type="button" onClick={handleFindCoordinates}>
+                    <button className="find" type="button" onClick={handleFindCoordinates}>
                         🔎 Find Coordinates
                     </button>
 
@@ -280,15 +279,19 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
                         <label>Longitude</label>
                         <input type="number" step="any" name="longitude" value={locations.longitude} onChange={handleChange} />{" "}
                     </div>
-                    <button type="submit">Update Location</button>
+                    <div className="buttons">
+                        <button className="show" type="submit">
+                            Update Location
+                        </button>
 
-                    <button type="button" onClick={() => setShowConfirm(location._id)}>
-                        Delete
-                    </button>
+                        <button className="update" type="button" onClick={() => setShowConfirm(location._id)}>
+                            Delete
+                        </button>
 
-                    <button type="button" onClick={onClose}>
-                        Cancel
-                    </button>
+                        <button className="remove" type="button" onClick={onClose}>
+                            Cancel
+                        </button>
+                    </div>
                 </form>
                 <Modal show={showConfirm !== null} onHide={() => setShowConfirm(null)} centered>
                     <Modal.Header>

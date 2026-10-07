@@ -170,22 +170,18 @@
 }
 
 .detail {
-    border: none;
-
-    background: #a1f0fa;
-
-    color: rgb(19, 0, 0);
+    border: none !important;
+    background: #a1f0fa !important;
+    color: rgb(2, 94, 155) !important;
 }
 
 .detail:hover {
     background: #016b7a;
-
     color: white;
 }
 
 .sighting-edit {
     border: 1px solid #016b7a;
-
     background: white;
 
     color: #016b7a;
@@ -413,24 +409,3 @@
 }
 
 /* Back Button */
-
-.sighting-container button {
-    margin-top: 25px;
-    padding: 10px 25px;
-
-    border: none;
-    border-radius: 8px;
-
-    background: #016b7a;
-    color: white;
-
-    font-size: 16px;
-    cursor: pointer;
-
-    transition: 0.3s;
-}
-
-.sighting-container button:hover {
-    background: #014f5b;
-    transform: translateY(-2px);
-}

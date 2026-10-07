@@ -367,14 +367,14 @@ function EditShark({ shark, onClose, onUpdated }) {
                             <input type="text" value={stage.approximateDuration} onChange={(e) => handleLifeCycleChange(index, "approximateDuration", e.target.value)} />
 
                             {sharks.lifeCycle.length > 1 && (
-                                <button type="button" onClick={() => removeLifeCycleStage(index)}>
+                                <button className="remove" type="button" onClick={() => removeLifeCycleStage(index)}>
                                     Remove Stage
                                 </button>
                             )}
                         </div>
                     ))}
 
-                    <button type="button" onClick={addLifeCycleStage}>
+                    <button className="show" type="button" onClick={addLifeCycleStage}>
                         + Add Life Cycle Stage
                     </button>
 
@@ -391,14 +391,14 @@ function EditShark({ shark, onClose, onUpdated }) {
                             <textarea value={characteristic.description} onChange={(e) => handleCharacteristicChange(index, "description", e.target.value)} />
 
                             {sharks.characteristics.length > 1 && (
-                                <button type="button" onClick={() => removeCharacteristic(index)}>
+                                <button className="remove" type="button" onClick={() => removeCharacteristic(index)}>
                                     Remove Characteristic
                                 </button>
                             )}
                         </div>
                     ))}
 
-                    <button type="button" onClick={addCharacteristic}>
+                    <button className="show" type="button" onClick={addCharacteristic}>
                         + Add Characteristic
                     </button>
 
@@ -426,9 +426,9 @@ function EditShark({ shark, onClose, onUpdated }) {
                         <input type="file" name="image" accept="image/*" onChange={handleChange} />
                     </div>
 
-                    <button type="submit">Update Shark</button>
+                    <button className="update" type="submit">Update Shark</button>
 
-                    <button type="button" onClick={onClose}>
+                    <button className="remove" type="button" onClick={onClose}>
                         Cancel
                     </button>
                 </form>

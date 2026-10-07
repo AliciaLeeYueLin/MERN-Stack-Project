@@ -23,7 +23,6 @@ function EditInfo() {
 
     const navigate = useNavigate();
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
@@ -33,7 +32,6 @@ function EditInfo() {
         });
     };
 
-    // Select an info card to edit
     const handleEdit = (selected) => {
         setSelectedInfo(selected);
 
@@ -49,7 +47,6 @@ function EditInfo() {
         setMessage("");
     };
 
-    // Update info
     const handleUpdate = async (e) => {
         e.preventDefault();
 
@@ -90,7 +87,6 @@ function EditInfo() {
 
             setMessage("Info updated successfully.");
 
-            // Update the card in the page
             setInfo((oldInfo) => oldInfo.map((i) => (i._id === response.data._id ? response.data : i)));
 
             setSelectedInfo(null);
@@ -109,7 +105,6 @@ function EditInfo() {
         }
     };
 
-    // Delete info
     const handleDelete = async () => {
         const token = localStorage.getItem("jwt_token");
 
@@ -146,7 +141,6 @@ function EditInfo() {
         }
     };
 
-    // Get user's own info and sharks
     useEffect(() => {
         const getData = async () => {
             const token = localStorage.getItem("jwt_token");
@@ -158,7 +152,6 @@ function EditInfo() {
             }
 
             try {
-                // Get current user
                 const userResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/user`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -167,19 +160,16 @@ function EditInfo() {
 
                 const currentUser = userResponse.data;
 
-                // Get all info
                 const infoResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/info/info`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                // Only keep this user's info
                 const ownInfo = infoResponse.data.filter((i) => i.userId?._id === currentUser._id);
 
                 setInfo(ownInfo);
 
-                // Get sharks for the dropdown
                 const sharkResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/shark/sharks`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -238,7 +228,6 @@ function EditInfo() {
                 ))}
             </div>
 
-            {/* Edit form */}
             {selectedInfo && (
                 <div className="edit-modal-overlay">
                     <div className="edit-modal">
@@ -291,7 +280,6 @@ function EditInfo() {
                 </div>
             )}
 
-            {/* Delete confirmation */}
             <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
                 <Modal.Header>
                     <Modal.Title>Confirm Deletion</Modal.Title>

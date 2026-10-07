@@ -21,11 +21,10 @@ router.get("/info", auth.authenticate, async (req, res) => {
         });
     }
 });
+
 router.get("/info/:id", auth.authenticate, async (req, res) => {
     try {
-        const findInfoById = await Info.findOne({
-            _id: req.params.id,
-        });
+        const findInfoById = await Info.findOne({ _id: req.params.id });
 
         res.json(findInfoById);
     } catch (error) {

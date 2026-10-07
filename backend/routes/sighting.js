@@ -13,20 +13,14 @@ router.get("/sightings", auth.authenticate, async (req, res) => {
         const query = {};
 
         if (search) {
-           
             const matchingSharks = await Shark.find({ name: { $regex: search, $options: "i" } }).select("_id");
 
-            const matchingLocations = await Location.find({ name: { $regex: search, $options: "i" }}).select("_id");
+            const matchingLocations = await Location.find({ name: { $regex: search, $options: "i" } }).select("_id");
 
-            query.$or = [
-                { sharkId: { $in: matchingSharks.map(s => s._id) } },
-                { locationId: { $in: matchingLocations.map(l => l._id) } }
-            ];
+            query.$or = [{ sharkId: { $in: matchingSharks.map((s) => s._id) } }, { locationId: { $in: matchingLocations.map((l) => l._id) } }];
         }
 
-        const allSighting = await Sighting.find(query)
-            .populate("sharkId")
-            .populate("locationId");
+        const allSighting = await Sighting.find(query).populate("sharkId").populate("locationId");
 
         res.json(allSighting);
     } catch (error) {
@@ -88,14 +82,10 @@ router.post("/bulk", auth.authenticate, async (req, res) => {
 
 router.patch("/sighting/:id", auth.authenticate, async (req, res) => {
     try {
-        const updatedSighting = await Sighting.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true,
-            }
-        );
+        const updatedSighting = await Sighting.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        });
 
         if (!updatedSighting) {
             return res.status(404).json({
@@ -192,22 +182,20 @@ router.delete("/sightings", auth.authenticate, async (req, res) => {
 
 router.delete("/sighting/:id", auth.authenticate, async (req, res) => {
     try {
-       const deleteSighting = await Sighting.findByIdAndDelete(req.params.id);
+        const deleteSighting = await Sighting.findByIdAndDelete(req.params.id);
 
-if (!deleteSighting) {
-    return res.status(404).json({
-        error: "Sighting not found",
-    });
-}
+        if (!deleteSighting) {
+            return res.status(404).json({
+                error: "Sighting not found",
+            });
+        }
 
-res.json(deleteSighting);
+        res.json(deleteSighting);
     } catch (error) {
         res.status(400).json({
             error: error.message,
         });
     }
 });
-
-
 
 module.exports = router;

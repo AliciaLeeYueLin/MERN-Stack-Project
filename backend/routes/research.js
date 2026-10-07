@@ -7,7 +7,6 @@ const Research = require("../models/Research");
 
 router.use(express.json());
 
-
 router.post("/request", auth.authenticate, async (req, res) => {
     try {
         const { organization, researchField, qualification, experience, reason, status } = req.body;

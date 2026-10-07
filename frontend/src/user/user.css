@@ -183,3 +183,37 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 }
+
+.rejected-message {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin: 20px 0;
+    background: #f8d7da;
+    color: #842029;
+
+    border: 1px solid #f5c2c7;
+    border-radius: 10px;
+}
+
+.rejected-message h4 {
+    margin: 0;
+}
+
+.close {
+    width: auto ;
+    margin: 0 ;
+    padding: 1px 8px ;
+    background: transparent ;
+    color: #842029 ;
+    border: none ;
+    border-radius: 50% ;
+    font-size: 10px ;
+    font-weight: bold;
+}
+
+.close:hover {
+    background: rgba(132, 32, 41, 0.1);
+}
