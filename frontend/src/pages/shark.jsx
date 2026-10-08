@@ -215,24 +215,17 @@ function Sharks() {
                     ))}
                 </div>
             )}
-            {(isAdmin || isResearcher) && (
-                <Modal show={showConfirm !== null} onHide={() => setShowConfirm(null)} centered>
-                    <Modal.Header>
-                        <Modal.Title>Confirm Deletion</Modal.Title>
-                    </Modal.Header>
+            {(isAdmin || isResearcher) && showConfirm && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                        <h1>Confirmation Deletion</h1>
+                        <h3>Are you sure you want to delete this shark?</h3>
 
-                    <Modal.Body>Are you sure you want to delete this shark?</Modal.Body>
+                        <button onClick={() => setShowConfirm(false)}>Cancel</button>
 
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowConfirm(null)}>
-                            Cancel
-                        </Button>
-
-                        <Button variant="danger" onClick={() => handleDelete(showConfirm)}>
-                            Yes, Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                        <button onClick={handleDelete}>Yes, Delete</button>
+                    </div>
+                </div>
             )}
             {selectedShark && <EditShark shark={selectedShark} onUpdated={handleUpdated} onClose={() => setSelectedShark(null)} />}
         </div>

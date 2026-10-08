@@ -44,17 +44,16 @@ router.post("/habitat", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/habitat", auth.authenticate, async (req, res) => {
-    try {
-        const { name } = req.body;
+router.patch("/habitat/:id", auth.authenticate, async (req, res) => {
+       try {
+        const updateHabitat = await Habitat.findByIdAndUpdate(
+            req.params.id, req.body, 
+            {
+                 new: true 
+            }
+            );
 
-        const newHabitat = new Habitat({
-            name,
-        });
-
-        const savedHabitat = await newHabitat.save();
-
-        res.status(201).json(savedHabitat);
+        res.json(updateHabitat);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

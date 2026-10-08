@@ -28,6 +28,39 @@ function ResearcherForm({ onClose }) {
             [name]: type === "checkbox" ? checked : value,
         });
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem("jwt_token");
+
+        if (!token || token.trim() === "") {
+            localStorage.removeItem("jwt_token");
+            navigate("/");
+            return;
+        }
+
+        const getUsers = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/user`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setUser(response.data);
+            } catch (error) {
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    localStorage.removeItem("jwt_token");
+                    navigate("/");
+                    return;
+                }
+
+                setError("Failed to load locations.");
+            }
+        };
+
+        getUsers();
+    }, [navigate]);
+
     const handleApply = async (e) => {
         e.preventDefault();
 
@@ -62,37 +95,6 @@ function ResearcherForm({ onClose }) {
             setError(error.response?.data?.error || "Failed to submit request.");
         }
     };
-    useEffect(() => {
-        const token = localStorage.getItem("jwt_token");
-
-        if (!token || token.trim() === "") {
-            localStorage.removeItem("jwt_token");
-            navigate("/");
-            return;
-        }
-
-        const getUsers = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/user`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                setUser(response.data);
-            } catch (error) {
-                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                    localStorage.removeItem("jwt_token");
-                    navigate("/");
-                    return;
-                }
-
-                setError("Failed to load locations.");
-            }
-        };
-
-        getUsers();
-    }, [navigate]);
 
     return (
         <>

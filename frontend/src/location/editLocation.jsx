@@ -39,14 +39,21 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
             return;
         }
 
-        const changedFields = {
-            name: locations.name,
-            country: locations.country,
-            region: locations.region,
-            latitude: Number(locations.latitude),
-            longitude: Number(locations.longitude),
-        };
+        const changedFields = {};
 
+        Object.keys(locations).forEach((key) => {
+            let newValue = locations[key];
+            let originalValue = originalLocation[key];
+
+            if (key === "latitude" || key === "longitude") {
+                newValue = Number(newValue);
+                originalValue = Number(originalValue);
+            }
+
+            if (newValue !== originalValue) {
+                changedFields[key] = newValue;
+            }
+        });
         try {
             const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/location/location/${location._id}`, changedFields, {
                 headers: {
@@ -80,7 +87,7 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
 
     const handleDelete = async () => {
         const token = localStorage.getItem("jwt_token");
-        
+
         if (!token || token.trim() === "") {
             localStorage.removeItem("jwt_token");
             onClose();
@@ -293,23 +300,20 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
                         </button>
                     </div>
                 </form>
-                <Modal show={showConfirm !== null} onHide={() => setShowConfirm(null)} centered>
-                    <Modal.Header>
-                        <Modal.Title>Confirm Deletion</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>Are you sure you want to delete this locaiton?</Modal.Body>
-
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowConfirm(null)}>
-                            Cancel
-                        </Button>
-
-                        <Button variant="danger" onClick={() => handleDelete(showConfirm)}>
-                            Yes, Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                {showConfirm && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                       <h1>Confirmatin Deletion</h1>
+                       <h3>Are you sure you want to delete this location?</h3>
+                        <button variant="secondary" onClick={() => setShowConfirm(false)}>
+                        Cancel
+                    </button>
+                     <button variant="danger" onClick={handleDelete}>
+                        Yes, Delete
+                    </button>
+                    </div>
+                </div>
+            )}
             </div>
         </div>
     );

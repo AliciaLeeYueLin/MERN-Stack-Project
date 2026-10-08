@@ -8,24 +8,48 @@ router.use(express.json());
 
 router.get("/sightings", auth.authenticate, async (req, res) => {
     try {
-        const { search } = req.query;
+        const {
+            search
+        } = req.query;
 
-        const query = {};
+        const filter = {};
+
 
         if (search) {
-            const matchingSharks = await Shark.find({ name: { $regex: search, $options: "i" } }).select("_id");
+            const matchingSharks = await Shark.find({
+                name: { $regex: search, $options: "i" }
+            }).select("_id");
 
-            const matchingLocations = await Location.find({ name: { $regex: search, $options: "i" } }).select("_id");
+            const matchingLocations = await Location.find({
+                name: { $regex: search, $options: "i" }
+            }).select("_id");
 
-            query.$or = [{ sharkId: { $in: matchingSharks.map((s) => s._id) } }, { locationId: { $in: matchingLocations.map((l) => l._id) } }];
+            filter.$or = [
+                {
+                    sharkId: {
+                        $in: matchingSharks.map((shark) => shark._id)
+                    }
+                },
+                {
+                    locationId: {
+                        $in: matchingLocations.map((location) => location._id)
+                    }
+                }
+            ];
         }
 
-        const allSighting = await Sighting.find(query).populate("sharkId").populate("locationId");
+        const sightings = await Sighting.find(filter)
+            .populate("sharkId")
+            .populate("locationId");
 
-        res.json(allSighting);
+        res.json(sightings);
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: error.message });
+
+        res.status(500).json({
+            error: error.message
+        });
     }
 });
 

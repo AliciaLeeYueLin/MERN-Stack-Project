@@ -13,7 +13,7 @@ function UserInfo({ onClose }) {
     const [form, setForm] = useState(false);
     const [userInfo, setUserInfo] = useState(true);
     const [application, setApplication] = useState(null);
-    const [showMessage, setShowMessage] = useState(true)
+    const [showMessage, setShowMessage] = useState(true);
 
     const navigate = useNavigate();
 
@@ -110,10 +110,10 @@ function UserInfo({ onClose }) {
             {error && <div className="error-message">{error}</div>}
 
             {userInfo && (
-                <div className="">
+                <div>
                     {users && (
-                        <div className="">
-                            <div className="">
+                        <div>
+                            <div>
                                 {users?.profile ? <img src={users.profile.startsWith("/uploads/") ? `${import.meta.env.VITE_API_BASE_URL}${users.profile}` : users.profile} alt="Profile" className="info-profile-pic" /> : <span className="profile-placeholder">👤</span>}
                                 <h5 onClick={openEdit}>🖊Edit Profile</h5>
                                 <h2>
@@ -137,7 +137,9 @@ function UserInfo({ onClose }) {
                                 {application?.status === "rejected" && showMessage && (
                                     <div className="rejected-message">
                                         <h4>Sorry, your Application has been rejected </h4>
-                                        <button className="close" onClick={() => setShowMessage(false)}>X</button>
+                                        <button className="close" onClick={() => setShowMessage(false)}>
+                                            X
+                                        </button>
                                     </div>
                                 )}
 

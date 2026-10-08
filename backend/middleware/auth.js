@@ -16,3 +16,13 @@ exports.authenticate = async (req, res, next) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+exports.adminOnly = (req, res, next) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({
+            error: "Admin access required",
+        });
+    }
+
+    next();
+};

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./info.css";
@@ -279,24 +278,22 @@ function EditInfo() {
                     </div>
                 </div>
             )}
-
-            <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
-                <Modal.Header>
-                    <Modal.Title>Confirm Deletion</Modal.Title>
-                </Modal.Header>
-
-                <Modal.Body>Are you sure you want to delete this info?</Modal.Body>
-
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+            {showConfirm && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                       <h1>Confirmatin Deletion</h1>
+                       <h3>Are you sure you want to delete this info?</h3>
+                        <button variant="secondary" onClick={() => setShowConfirm(false)}>
                         Cancel
-                    </Button>
-
-                    <Button variant="danger" onClick={handleDelete}>
+                    </button>
+                     <button variant="danger" onClick={handleDelete}>
                         Yes, Delete
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                    </button>
+                    </div>
+                </div>
+            )}
+
+           
         </div>
     );
 }

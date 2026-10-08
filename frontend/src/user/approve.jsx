@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import "./user.css"
+import "./user.css";
 import axios from "axios";
 
 function Approve() {
@@ -10,6 +10,38 @@ function Approve() {
     const [showRejectConfirm, setShowRejectConfirm] = useState(null);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("jwt_token");
+
+        if (!token || token.trim() === "") {
+            localStorage.removeItem("jwt_token");
+            navigate("/");
+            return;
+        }
+
+        const getResearch = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/admin/application`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setApplications(response.data);
+            } catch (error) {
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    localStorage.removeItem("jwt_token");
+                    navigate("/");
+                    return;
+                }
+
+                setError("Failed to load applications.");
+            }
+        };
+
+        getResearch();
+    }, [navigate]);
 
     const handleApprove = async (id) => {
         const token = localStorage.getItem("jwt_token");
@@ -51,38 +83,6 @@ function Approve() {
             setError("Failed to reject application.");
         }
     };
-
-    useEffect(() => {
-        const token = localStorage.getItem("jwt_token");
-
-        if (!token || token.trim() === "") {
-            localStorage.removeItem("jwt_token");
-            navigate("/");
-            return;
-        }
-
-        const getResearch = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/admin/application`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                setApplications(response.data);
-            } catch (error) {
-                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                    localStorage.removeItem("jwt_token");
-                    navigate("/");
-                    return;
-                }
-
-                setError("Failed to load applications.");
-            }
-        };
-
-        getResearch();
-    }, [navigate]);
 
     return (
         <>
@@ -150,13 +150,7 @@ function Approve() {
                         Cancel
                     </Button>
 
-                    <Button
-                        variant="danger"
-                        onClick={() => {
-                            handleReject(showRejectConfirm);
-                            setShowRejectConfirm(null);
-                        }}
-                    >
+                    <Button variant="danger" onClick={() => { handleReject(showRejectConfirm); setShowRejectConfirm(null);}}>
                         Yes, Reject
                     </Button>
                 </Modal.Footer>

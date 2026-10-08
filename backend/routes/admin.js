@@ -30,7 +30,7 @@ router.get("/myApplication", auth.authenticate, async (req, res) => {
     }
 });
 
-router.put("/application/:id/approve", auth.authenticate, async (req, res) => {
+router.put("/application/:id/approve", auth.authenticate, auth.adminOnly, async (req, res) => {
     try {
         const application = await Research.findById(req.params.id);
 
@@ -66,12 +66,14 @@ router.put("/application/:id/approve", auth.authenticate, async (req, res) => {
     }
 });
 
-router.put("/application/:id/reject", auth.authenticate, async (req, res) => {
+router.put("/application/:id/reject", auth.authenticate, auth.adminOnly, async (req, res) => {
     try {
         const application = await Research.findById(req.params.id);
 
         if (!application) {
-            return res.status(404).json({ error: "Application not found" });
+            return res.status(404).json({
+                error: "Application not found",
+            });
         }
 
         application.status = "rejected";
@@ -82,8 +84,9 @@ router.put("/application/:id/reject", auth.authenticate, async (req, res) => {
             application,
         });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({
+            error: error.message,
+        });
     }
 });
-
 module.exports = router;

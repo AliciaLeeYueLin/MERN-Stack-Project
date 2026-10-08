@@ -78,24 +78,11 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
         const changedFields = {};
 
         Object.keys(sightings).forEach((key) => {
-            let originalValue = originalSighting[key] || "";
-
-            if (key === "sharkId") {
-                originalValue = originalSighting.sharkId?._id || originalSighting.sharkId || "";
-            }
-
-            if (key === "locationId") {
-                originalValue = originalSighting.locationId?._id || originalSighting.locationId || "";
-            }
-
-            if (key === "date" && originalValue) {
-                originalValue = originalValue.substring(0, 10);
-            }
-
-            if (sightings[key] !== originalValue) {
+            if (sightings[key] !== originalSighting[key]) {
                 changedFields[key] = sightings[key];
             }
         });
+
         try {
             const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/sighting/sighting/${sighting._id}`, changedFields, {
                 headers: {
@@ -117,11 +104,7 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
                 return;
             }
 
-            if (error.response?.status === 404) {
-                setError("Sighting not found.");
-            } else {
-                setError("Failed to update sighting.");
-            }
+            setError(error.response?.data?.error || "Failed to update sighting.");
         }
     };
 
@@ -267,8 +250,6 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
                         <input type="text" name="observer" value={sightings.observer} onChange={handleChange} />
                     </div>
 
-                    {/* Notes */}
-
                     <div className="form-group">
                         <label>Notes</label>
 
@@ -287,23 +268,20 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
                         </button>
                     </div>
                 </form>
-                <Modal show={showConfirm !== null} onHide={() => setShowConfirm(null)} centered>
-                    <Modal.Header>
-                        <Modal.Title>Confirm Deletion</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>Are you sure you want to delete this sighting?</Modal.Body>
-
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowConfirm(null)}>
-                            Cancel
-                        </Button>
-
-                        <Button variant="danger" onClick={() => handleDelete(showConfirm)}>
-                            Yes, Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+               {showConfirm && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                       <h1>Confirmatin Deletion</h1>
+                       <h3>Are you sure you want to delete this sighting?</h3>
+                        <button variant="secondary" onClick={() => setShowConfirm(false)}>
+                        Cancel
+                    </button>
+                     <button variant="danger" onClick={handleDelete}>
+                        Yes, Delete
+                    </button>
+                    </div>
+                </div>
+            )}
             </div>
         </div>
     );

@@ -13,39 +13,38 @@ router.use(express.json());
 
 router.get("/sharks", auth.authenticate, async (req, res) => {
     try {
-        const { search, diet, habitat, sort } = req.query;
+        const { search, diet, habitat, nameOrder } = req.query;
 
-        const query = {};
+        const filter = {};
 
         if (search) {
-            query.$or = [{ name: { $regex: search, $options: "i" } }, { scientificName: { $regex: search, $options: "i" } }];
+            filter.$or = [{ name: { $regex: search, $options: "i" } }, { scientificName: { $regex: search, $options: "i" } }];
         }
 
         if (diet && diet !== "All") {
-            query.diet = diet;
+            filter.diet = diet;
         }
+
         if (habitat && habitat !== "All") {
-            query.habitatId = habitat;
-        }
-        let sortOption = {};
-
-        if (sort === "nameAsc") {
-            sortOption.name = 1;
+            filter.habitatId = habitat;
         }
 
-        if (sort === "nameDesc") {
-            sortOption.name = -1;
+        const sortOptions = {};
+
+        if (nameOrder) {
+            sortOptions.name = Number(nameOrder);
         }
 
-        const sharks = await Shark.find(query).populate("habitatId").sort(sortOption);
+        const sharks = await Shark.find(filter).populate("habitatId").sort(sortOptions);
 
         res.json(sharks);
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             error: error.message,
         });
     }
 });
+
 router.get("/sharks/:id", auth.authenticate, async (req, res) => {
     try {
         const findSharkById = await Shark.findOne({
@@ -158,11 +157,11 @@ router.patch("/shark/bulk", auth.authenticate, async (req, res) => {
         for (const shark of sharks) {
             const { _id, ...updateData } = shark;
 
-            if (!_id) {continue;}
+            if (!_id) {
+                continue;
+            }
 
-            const updatedShark = await Shark.findByIdAndUpdate(
-                _id, updateData, 
-            {
+            const updatedShark = await Shark.findByIdAndUpdate(_id, updateData, {
                 new: true,
                 runValidators: true,
             });
