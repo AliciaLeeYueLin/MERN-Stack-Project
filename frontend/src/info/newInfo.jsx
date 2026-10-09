@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./info.css"
+import "./info.css";
 
 function NewInfo() {
     const navigate = useNavigate();
@@ -142,7 +142,7 @@ function NewInfo() {
                             ))}
                         </select>
                     </div>
-                    
+
                     <div className="form-group">
                         <label>Title</label>
 
@@ -153,6 +153,24 @@ function NewInfo() {
                         <label>Description</label>
 
                         <input type="text" name="description" value={information.description} onChange={handleChange} />
+                    </div>
+
+                    <div className="public-checkbox">
+                        <input
+                            type="checkbox"
+                            id="isPublic"
+                            checked={information.isPublic}
+                            onChange={(e) =>
+                                setInformation({
+                                    ...information,
+                                    isPublic: e.target.checked,
+                                })
+                            }
+                        />
+
+                        <label htmlFor="isPublic">Make this information public</label>
+
+                        <p>{information.isPublic ? "Everyone can view this information." : "Only you and the admin can view this information."}</p>
                     </div>
 
                     <div className="form-group">

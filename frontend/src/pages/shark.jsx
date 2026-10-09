@@ -131,9 +131,9 @@ function Sharks() {
                 <h1>Shark</h1>
             </div>
             <div className="shark-buttons">
-                {isAdmin && (
+                {(isAdmin || isResearcher) && (
                     <button className="add" onClick={() => navigate(`/sharks/add/`)}>
-                        Add
+                        Add Sharks
                     </button>
                 )}
             </div>

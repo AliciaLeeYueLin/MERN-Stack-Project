@@ -10,6 +10,9 @@ function Habitats() {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isResearcher, setIsResearcher] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,6 +44,33 @@ function Habitats() {
             }
         };
 
+        const getUser = async () => {
+            const token = localStorage.getItem("jwt_token");
+
+            if (!token || token.trim() === "") {
+                localStorage.removeItem("jwt_token");
+                navigate("/");
+                return;
+            }
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/user`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.data.role === "admin") {
+                    setIsAdmin(true);
+                }
+                if (response.data.role === "researcher") {
+                    setIsResearcher(true);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        getUser();
         getHabitats();
     }, [navigate]);
 
@@ -114,9 +144,11 @@ function Habitats() {
             <div className="habitats-header">
                 <h1>Habitats</h1>
 
-                <button className="add" onClick={() => setShowAdd(!showAdd)}>
-                    {showAdd ? "Cancel" : "+ Add Habitat"}
-                </button>
+                {(isAdmin || isResearcher) && (
+                    <button className="add" onClick={() => setShowAdd(!showAdd)}>
+                        {showAdd ? "Cancel" : "+ Add Habitat"}
+                    </button>
+                )}
             </div>
 
             {error && <div className="error-message">{error}</div>}
@@ -139,10 +171,11 @@ function Habitats() {
                 {habitats.map((habitat) => (
                     <div className="habitat-card" key={habitat._id}>
                         <h2>{habitat.name}</h2>
-
-                        <button className="delete-habitat-button" onClick={() => handleDelete(habitat._id)}>
-                            Delete
-                        </button>
+                        {(isAdmin || isResearcher) && (
+                            <button className="delete-habitat-button" onClick={() => handleDelete(habitat._id)}>
+                                Delete
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>

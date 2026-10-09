@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserInfo from "../user/userInfo";
-import "../navbar/navbar.css"
+import "../navbar/navbar.css";
 
 const Navigation = () => {
     const [error, setError] = useState("");
@@ -37,6 +37,7 @@ const Navigation = () => {
                 if (response.data.role === "admin") {
                     setIsAdmin(true);
                 }
+               
                 if (response.data.role === "user") {
                     setIsUser(true);
                 }
@@ -90,11 +91,13 @@ const Navigation = () => {
                         </NavLink>
                     </li>
 
-                    <li className="nav-item">
-                        <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/habitat">
-                            Habitat
-                        </NavLink>
-                    </li>
+                    {!isUser && (
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/habitat">
+                                Habitat
+                            </NavLink>
+                        </li>
+                    )}
 
                     <li className="nav-item">
                         <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/location">

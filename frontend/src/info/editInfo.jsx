@@ -13,6 +13,7 @@ function EditInfo() {
         description: "",
         imageUrl: "",
         image: null,
+        isPublic: true,
     });
 
     const [sharks, setSharks] = useState([]);
@@ -40,8 +41,8 @@ function EditInfo() {
             description: selected.description || "",
             imageUrl: selected.imageUrl || "",
             image: null,
+            isPublic: selected.isPublic ?? false,
         });
-
         setError("");
         setMessage("");
     };
@@ -71,6 +72,10 @@ function EditInfo() {
 
         if (information.description !== selectedInfo.description) {
             formData.append("description", information.description);
+        }
+
+        if (information.isPublic !== selectedInfo.isPublic) {
+            formData.append("isPublic", String(information.isPublic));
         }
 
         if (information.image) {
@@ -207,6 +212,8 @@ function EditInfo() {
                         <div className="info-card">
                             <div className="info-user">
                                 <h2>Researcher: {i.userId?.name}</h2>
+                                {i.isPublic && <p className="badge-public">Public</p>}
+                                {!i.isPublic && <p className="badge-private">Private</p>}
                             </div>
 
                             <h3>Shark: {i.sharkId?.name}</h3>
@@ -259,6 +266,24 @@ function EditInfo() {
                                 <textarea name="description" value={information.description} onChange={handleChange} />
                             </div>
 
+                            <div className="public-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="isPublic"
+                                    checked={information.isPublic}
+                                    onChange={(e) =>
+                                        setInformation({
+                                            ...information,
+                                            isPublic: e.target.checked,
+                                        })
+                                    }
+                                />
+
+                                <label htmlFor="isPublic">Make this information public</label>
+
+                                <p>{information.isPublic ? "Everyone can view this information." : "Only you and the admin can view this information."}</p>
+                            </div>
+
                             <div className="form-group">
                                 <label>Image</label>
 
@@ -281,19 +306,17 @@ function EditInfo() {
             {showConfirm && (
                 <div className="edit-modal-overlay">
                     <div className="edit-modal">
-                       <h1>Confirmatin Deletion</h1>
-                       <h3>Are you sure you want to delete this info?</h3>
+                        <h1>Confirmatin Deletion</h1>
+                        <h3>Are you sure you want to delete this info?</h3>
                         <button variant="secondary" onClick={() => setShowConfirm(false)}>
-                        Cancel
-                    </button>
-                     <button variant="danger" onClick={handleDelete}>
-                        Yes, Delete
-                    </button>
+                            Cancel
+                        </button>
+                        <button variant="danger" onClick={handleDelete}>
+                            Yes, Delete
+                        </button>
                     </div>
                 </div>
             )}
-
-           
         </div>
     );
 }

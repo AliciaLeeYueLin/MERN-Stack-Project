@@ -144,7 +144,7 @@ function Home() {
                 <section className="map-section">
                     <h2>Shark Locations</h2>
 
-                    <p>Explore some of the locations where different shark species have been recorded.</p>
+                    <p>Explore some of the locations where different shark species have been recorded in this app.</p>
 
                     <div className="map-container">
                         <MapContainer

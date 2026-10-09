@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
-import "./sighting.css"
-
+import axios from "axios";
+import "./sighting.css";
 
 function NewSighting() {
     const navigate = useNavigate();
@@ -125,7 +124,6 @@ function NewSighting() {
                 {message && <p className="message">{message}</p>}
 
                 <form onSubmit={handleAdd} className="add-form">
-
                     <div className="form-group">
                         <label>Shark</label>
 
@@ -139,7 +137,6 @@ function NewSighting() {
                             ))}
                         </select>
                     </div>
-
 
                     <div className="form-group">
                         <label>Location</label>
@@ -158,13 +155,13 @@ function NewSighting() {
                     <div className="form-group">
                         <label>Date</label>
 
-                        <input type="date" name="date" value={sightings.date} onChange={handleChange} required />
+                        <input type="date" name="date" value={sightings.date} onChange={handleChange} max={new Date().toLocaleDateString("en-CA")} required />
                     </div>
-
+                    
                     <div className="form-group">
                         <label>Description</label>
 
-                        <textarea name="description" value={sightings.description} onChange={handleChange}  rows="5" required />
+                        <textarea name="description" value={sightings.description} onChange={handleChange} rows="5" required />
                     </div>
 
                     <div className="form-group">
@@ -197,7 +194,6 @@ function NewSighting() {
                             <option value="Stormy">🌪️ Stormy</option>
                         </select>
                     </div>
-
 
                     <div className="form-group">
                         <label>Visibility</label>

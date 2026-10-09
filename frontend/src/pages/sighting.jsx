@@ -11,6 +11,9 @@ function Sighting() {
     const [search, setSearch] = useState("");
     const [expandedSighting, setExpandedSighting] = useState(null);
 
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isResearcher, setIsResearcher] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,6 +48,27 @@ function Sighting() {
             }
         };
 
+        const getUser = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/user`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.data.role === "admin") {
+                    setIsAdmin(true);
+                }
+                if (response.data.role === "researcher") {
+                    setIsResearcher(true);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        getUser();
+
         getSighting();
     }, [search, navigate]);
 
@@ -61,9 +85,11 @@ function Sighting() {
             <div className="sighting-header">
                 <h1>Sighting</h1>
 
-                <button className="add" onClick={() => navigate("/sighting/add")}>
-                    Add
-                </button>
+                {(isAdmin || isResearcher) && (
+                    <button className="add" onClick={() => navigate("/sighting/add")}>
+                        Add
+                    </button>
+                )}
             </div>
 
             {error && <div className="error-message">{error}</div>}
@@ -97,9 +123,11 @@ function Sighting() {
                                     View Detail
                                 </button>
 
-                                <button className="sighting-edit" onClick={() => setSelectedSighting(sighting)}>
-                                    Edit
-                                </button>
+                                {(isAdmin || isResearcher) && (
+                                    <button className="sighting-edit" onClick={() => setSelectedSighting(sighting)}>
+                                        Edit
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

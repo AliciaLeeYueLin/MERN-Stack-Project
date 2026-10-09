@@ -180,7 +180,7 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
                     <div className="form-group">
                         <label>Date</label>
 
-                        <input type="date" name="date" value={sightings.date} onChange={handleChange} required />
+                        <input type="date" name="date" value={sightings.date} onChange={handleChange} max={new Date().toLocaleDateString("en-CA")} required />
                     </div>
 
                     <div className="form-group">
@@ -268,20 +268,20 @@ function EditSighting({ sighting, onClose, onUpdated, onDeleted }) {
                         </button>
                     </div>
                 </form>
-               {showConfirm && (
-                <div className="edit-modal-overlay">
-                    <div className="edit-modal">
-                       <h1>Confirmatin Deletion</h1>
-                       <h3>Are you sure you want to delete this sighting?</h3>
-                        <button variant="secondary" onClick={() => setShowConfirm(false)}>
-                        Cancel
-                    </button>
-                     <button variant="danger" onClick={handleDelete}>
-                        Yes, Delete
-                    </button>
+                {showConfirm && (
+                    <div className="edit-modal-overlay">
+                        <div className="edit-modal">
+                            <h1>Confirmatin Deletion</h1>
+                            <h3>Are you sure you want to delete this sighting?</h3>
+                            <button variant="secondary" onClick={() => setShowConfirm(false)}>
+                                Cancel
+                            </button>
+                            <button variant="danger" onClick={handleDelete}>
+                                Yes, Delete
+                            </button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
             </div>
         </div>
     );

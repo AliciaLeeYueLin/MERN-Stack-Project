@@ -23,6 +23,10 @@ const InfoSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    isPublic: {
+        type: Boolean,
+        default: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

@@ -19,10 +19,12 @@ import Footer from "./pages/footer";
 import SharkDetail from "./shark/sharkDetails";
 import InfoNavbar from "./pages/infoNavbar";
 import Habitats from "./habitat/habitat";
+import ScrollToTop from "./component/scrollToTop";
 
 function App() {
     return (
         <BrowserRouter>
+        <ScrollToTop/>
             <div className="app">
                 <main className="main-content">
                     <Routes>
@@ -48,8 +50,6 @@ function App() {
                         </Route>
                     </Routes>
                 </main>
-
-                <Footer />
             </div>
         </BrowserRouter>
     );

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 
-function ResearcherForm({ onClose }) {
+function ResearcherForm({ onClose, show }) {
     const [form, setForm] = useState({
         name: "",
         organization: "",
@@ -144,23 +144,17 @@ function ResearcherForm({ onClose }) {
                     </button>
                 </div>
             </form>
-            <Modal show={showConfirm === true} onHide={() => setShowConfirm(null)} centered>
-                <Modal.Header>
-                    <Modal.Title>Confirm Application</Modal.Title>
-                </Modal.Header>
-
-                <Modal.Body>Are you sure you want to submit your researcher application? Once the form is submitted, data cannot be change</Modal.Body>
-
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowConfirm(null)}>
-                        Cancel
-                    </Button>
-
-                    <Button variant="primary" onClick={handleApply}>
-                        Yes, Submit
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {showConfirm && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                        <h1>Confirmation Deletion</h1>
+                        <h3>Are you sure you want to submit this form?</h3>
+                        <p>The form cannot be edit, delete or submit again.</p>
+                        <button onClick={() => setShowConfirm(false)}>Cancel</button>
+                        <button onClick={handleApply}>Yes, Submit</button>{" "}
+                    </div>
+                </div>
+            )}
         </>
     );
 }

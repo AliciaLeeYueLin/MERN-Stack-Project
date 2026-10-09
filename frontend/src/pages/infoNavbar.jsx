@@ -27,7 +27,7 @@ function InfoNavbar() {
     return (
         <div className="info-layout">
             <button className="sidebar-button" onClick={() => setSidebarOpen(!sidebarOpen)}>
-                ☰
+                ⫶☰
             </button>
 
             <nav className={sidebarOpen ? "sidenav open" : "sidenav closed"}>

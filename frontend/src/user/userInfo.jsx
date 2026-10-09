@@ -114,23 +114,35 @@ function UserInfo({ onClose }) {
                     {users && (
                         <div>
                             <div>
-                                {users?.profile ? <img src={users.profile.startsWith("/uploads/") ? `${import.meta.env.VITE_API_BASE_URL}${users.profile}` : users.profile} alt="Profile" className="info-profile-pic" /> : <span className="profile-placeholder">👤</span>}
-                                <h5 onClick={openEdit}>🖊Edit Profile</h5>
-                                <h2>
-                                    <strong>{users.name}</strong>
-                                </h2>
-                                <hr />
-                                <p>
-                                    <strong>Email: </strong>
-                                    {users.email}
-                                </p>
-                                <hr />
+                                <div className="user-profile-header">
+                                    {users?.profile ? <img src={users.profile.startsWith("/uploads/") ? `${import.meta.env.VITE_API_BASE_URL}${users.profile}` : users.profile} alt="Profile" className="info-profile-pic" /> : <span className="profile-placeholder">👤</span>}
 
-                                <p>
-                                    <strong>Role: </strong>
-                                    {users.role}
-                                </p>
-                                <h5 onClick={openEditInfo}>🖊Change Name and Password</h5>
+                                    <h2>{users.name}</h2>
+                                    <p className="user-email">{users.email}</p>
+                                    <span className="role-badge">{users.role}</span>
+                                </div>
+
+                                <div className="profile-actions">
+                                    <button className="profile-action" onClick={openEdit}>
+                                        🖊️ Edit Profile
+                                    </button>
+
+                                    <button className="profile-action" onClick={openEditInfo}>
+                                        🔐 Change Name and Password
+                                    </button>
+                                </div>
+
+                                {/* <div className="user-details">
+                                    <div className="user-detail-item">
+                                        <span className="user-detail-label">Email address</span>
+                                        <span className="user-detail-value">{users.email}</span>
+                                    </div>
+
+                                    <div className="user-detail-item">
+                                        <span className="user-detail-label">Account role</span>
+                                        <span className="user-detail-value">{users.role}</span>
+                                    </div>
+                                </div> */}
 
                                 {users.role === "user" && !application && <button onClick={openForm}>Apply as a Researcher!</button>}
 

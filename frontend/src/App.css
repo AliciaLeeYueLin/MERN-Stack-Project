@@ -4,7 +4,22 @@ body,
     min-height: 100%;
     margin: 0;
 }
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
+.main-content {
+    flex: 1;
+}
+
+.footer {
+    background: #082f49;
+    color: white;
+    padding: 45px 40px 20px;
+    margin-top: auto;
+}
 .app {
     min-height: 100vh;
     display: flex;

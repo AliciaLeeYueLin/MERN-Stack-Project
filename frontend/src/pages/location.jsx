@@ -4,15 +4,12 @@ import axios from "axios";
 import EditLocation from "../location/editLocation";
 import "../location/location.css";
 
-
-
 function Locations() {
     const [locations, setLocations] = useState([]);
     const [error, setError] = useState("");
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isResearcher, setIsResearcher] = useState(false);
-    
 
     const navigate = useNavigate();
 
@@ -82,48 +79,55 @@ function Locations() {
             <div className="location-header">
                 <h1>Location Shark Spotted 👀</h1>
 
-                <button className="add" onClick={() => navigate(`/location/add/`)}>
-                    Add
-                </button>
+                {(isAdmin || isResearcher) && (
+                    <button className="add" onClick={() => navigate(`/location/add/`)}>
+                        Add
+                    </button>
+                )}
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <div className="location-grid">
-                {locations.map((location) => (
-                    <div className="location-card" key={location._id}>
-                        {location.imageUrl && <img src={location.imageUrl} alt={location.name} />}
-                        <div className="card-content">
-                            <h2>{location.name}</h2>
-                            <h3>{location.country}</h3>
-                            <h3>{location.region}</h3>
+            {locations.length === 0 ? (
+                <h1>No shark/location sighting found...</h1>
+            ) : (
+                <div className="location-grid">
+                    {locations.map((location) => (
+                        <div className="location-card" key={location._id}>
+                            {location.imageUrl && <img src={location.imageUrl} alt={location.name} />}
+                            <div className="card-content">
+                                <h2>{location.name}</h2>
+                                <h3>{location.country}</h3>
+                                <h3>{location.region}</h3>
 
-                            <p>
-                                <strong>Description:</strong>
-                                {location.description}
-                            </p>
+                                <p>
+                                    <strong>Description:</strong>
+                                    {location.description}
+                                </p>
 
-                            <p>
-                                <strong>Latitude:</strong> {location.latitude}
-                            </p>
-                            <p>
-                                <strong>Longitude:</strong> {location.longitude}
-                            </p>
-                        </div>
-                        <button type="button">
-                            <a href={`https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}`} target="_blank" rel="noopener noreferrer" className="map-button">
-                                🧭 Get Directions
-                            </a>
-                        </button>
-
-                        {(isAdmin || isResearcher) && (
-                            <button className="location-edit" onClick={() => setSelectedLocation(location)}>
-                                Edit
+                                <p>
+                                    <strong>Latitude:</strong> {location.latitude}
+                                </p>
+                                <p>
+                                    <strong>Longitude:</strong> {location.longitude}
+                                </p>
+                            </div>
+                            <button type="button">
+                                <a href={`https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}`} target="_blank" rel="noopener noreferrer" className="map-button">
+                                    🧭 Get Directions
+                                </a>
                             </button>
-                        )}
-                    </div>
-                ))}
-            </div>
+
+                            {(isAdmin || isResearcher) && (
+                                <button className="location-edit" onClick={() => setSelectedLocation(location)}>
+                                    Edit
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+
             {selectedLocation && <EditLocation location={selectedLocation} onUpdated={handleUpdated} onDeleted={handleDeleted} onClose={() => setSelectedLocation(null)} />}
         </div>
     );
