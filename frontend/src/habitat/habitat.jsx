@@ -77,11 +77,6 @@ function Habitats() {
     const handleAddHabitat = async (e) => {
         e.preventDefault();
 
-        if (!newHabitat.trim()) {
-            setError("Please enter a habitat name.");
-            return;
-        }
-
         const token = localStorage.getItem("jwt_token");
 
         try {

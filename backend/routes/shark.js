@@ -13,12 +13,15 @@ router.use(express.json());
 
 router.get("/sharks", auth.authenticate, async (req, res) => {
     try {
-        const { search, diet, habitat, nameOrder } = req.query;
+        const { search, diet, habitat, sortOrder } = req.query;
 
         const filter = {};
 
         if (search) {
-            filter.$or = [{ name: { $regex: search, $options: "i" } }, { scientificName: { $regex: search, $options: "i" } }];
+            filter.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { scientificName: { $regex: search, $options: "i" } }
+            ];
         }
 
         if (diet && diet !== "All") {
@@ -29,18 +32,22 @@ router.get("/sharks", auth.authenticate, async (req, res) => {
             filter.habitatId = habitat;
         }
 
-        const sortOptions = {};
+        let sortOptions = { createdAt: -1 };
 
-        if (nameOrder) {
-            sortOptions.name = Number(nameOrder);
+        if (sortOrder === "nameAsc") {
+            sortOptions = { name: 1 };
+        } else if (sortOrder === "nameDesc") {
+            sortOptions = { name: -1 };
         }
 
-        const sharks = await Shark.find(filter).populate("habitatId").sort(sortOptions);
+        const sharks = await Shark.find(filter)
+            .populate("habitatId")
+            .sort(sortOptions);
 
         res.json(sharks);
     } catch (error) {
         res.status(400).json({
-            error: error.message,
+            error: error.message
         });
     }
 });

@@ -10,7 +10,7 @@ router.use(express.json());
 
 router.get("/habitats", auth.authenticate, async (req, res) => {
     try {
-        const getAllHabitat = await Habitat.find({});
+        const getAllHabitat = await Habitat.find({});;
 
         res.json(getAllHabitat);
     } catch (error) {
@@ -20,7 +20,7 @@ router.get("/habitats", auth.authenticate, async (req, res) => {
 
 router.get("/habitat/:id", auth.authenticate, async (req, res) => {
     try {
-        const findHabitatById = await Habitat.findOne({ _id: req.params.id });
+        const findHabitatById = await Habitat.findOne({ _id: req.params.id });;
 
         res.json(findHabitatById);
     } catch (error) {

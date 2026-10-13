@@ -8,47 +8,41 @@ router.use(express.json());
 
 router.get("/sightings", auth.authenticate, async (req, res) => {
     try {
-        const {
-            search
-        } = req.query;
+        const { search } = req.query;
 
         const filter = {};
 
-
         if (search) {
             const matchingSharks = await Shark.find({
-                name: { $regex: search, $options: "i" }
+                name: { $regex: search, $options: "i" },
             }).select("_id");
 
             const matchingLocations = await Location.find({
-                name: { $regex: search, $options: "i" }
+                name: { $regex: search, $options: "i" },
             }).select("_id");
 
             filter.$or = [
                 {
                     sharkId: {
-                        $in: matchingSharks.map((shark) => shark._id)
-                    }
+                        $in: matchingSharks.map((shark) => shark._id),
+                    },
                 },
                 {
                     locationId: {
-                        $in: matchingLocations.map((location) => location._id)
-                    }
-                }
+                        $in: matchingLocations.map((location) => location._id),
+                    },
+                },
             ];
         }
 
-        const sightings = await Sighting.find(filter)
-            .populate("sharkId")
-            .populate("locationId");
+        const sightings = await Sighting.find(filter).populate("sharkId").populate("locationId");
 
         res.json(sightings);
-
     } catch (error) {
         console.error(error);
 
         res.status(500).json({
-            error: error.message
+            error: error.message,
         });
     }
 });

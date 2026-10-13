@@ -31,7 +31,13 @@ function Info() {
                     setIsResearcher(true);
                 }
             } catch (error) {
-                console.log("USER ERROR:", error);
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    localStorage.removeItem("jwt_token");
+                    navigate("/");
+                    return;
+                }
+
+                setError("Failed to load your info.");
             }
         };
 
@@ -47,15 +53,13 @@ function Info() {
 
                 setInfo(response.data);
             } catch (error) {
-                console.log("INFO ERROR:", error);
-
                 if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                     localStorage.removeItem("jwt_token");
                     navigate("/");
                     return;
                 }
 
-                setError("Failed to load info.");
+                setError("Failed to load your info.");
             }
         };
 
@@ -115,7 +119,6 @@ function Info() {
         <div className="info-container">
             <div className="info-header">
                 <h1>Info Area</h1>
-
             </div>
 
             {error && <div className="error-message">{error}</div>}

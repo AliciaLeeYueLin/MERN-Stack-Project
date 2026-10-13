@@ -78,7 +78,7 @@ function Sharks() {
                         search: search,
                         diet: diet,
                         habitat: habitatId,
-                        sort: sort,
+                        sortOrder: sort,
                     },
                 });
 
@@ -164,8 +164,9 @@ function Sharks() {
                     </select>
 
                     <select className="filter-select" value={sort} onChange={(e) => setSort(e.target.value)}>
-                        <option value="nameAsc">Name: A-Z</option>
-                        <option value="nameDesc">Name: Z-A</option>
+                        <option value="nameAsc">Name (A–Z)</option>
+                        <option value="nameDesc">Name (Z–A)</option>
+                        <option value="createdAt">Created Time</option>
                     </select>
                 </div>
             </div>

@@ -39,8 +39,7 @@ function NewLocation() {
         }
 
         try {
-            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/location/location/`, 
-                locations, {
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/location/location/`, locations, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -66,20 +65,18 @@ function NewLocation() {
         navigate("/location");
     };
 
-   const handleFindCoordinates = async () => {
-    if (!locations.name || !locations.country || !locations.region) {
-        setLocationError("Please enter the name, country and region.");
-        return;
-    }
+    const handleFindCoordinates = async () => {
+        if (!locations.name || !locations.country || !locations.region) {
+            setLocationError("Please enter the name, country and region.");
+            return;
+        }
 
-    try {
-        setLocationError("");
-        setMessage("");
+        try {
+            setLocationError("");
+            setMessage("");
 
-        const searchNominatim = async (query, limit = 5) => {
-            const response = await axios.get(
-                "https://nominatim.openstreetmap.org/search",
-                {
+            const searchNominatim = async (query, limit = 5) => {
+                const response = await axios.get("https://nominatim.openstreetmap.org/search", {
                     params: {
                         q: query,
                         format: "json",
@@ -89,158 +86,115 @@ function NewLocation() {
                     headers: {
                         Accept: "application/json",
                     },
+                });
+
+                return response.data;
+            };
+
+            const countryResults = await searchNominatim(locations.country, 5);
+
+            const countryExists = countryResults.some((result) => {
+                return result.addresstype === "country" && result.address?.country;
+            });
+
+            if (!countryExists) {
+                setLocationError(`The country "${locations.country}" could not be found.`);
+
+                setLocations((prev) => ({
+                    ...prev,
+                    latitude: "",
+                    longitude: "",
+                }));
+
+                return;
+            }
+
+            const regionResults = await searchNominatim(`${locations.region}, ${locations.country}`, 5);
+
+            const countryName = locations.country.toLowerCase();
+
+            const regionResult = regionResults.find((result) => {
+                const address = result.address;
+
+                if (!address?.country) {
+                    return false;
                 }
-            );
 
-            return response.data;
-        };
+                return address.country.toLowerCase() === countryName;
+            });
 
-      
+            if (!regionResult) {
+                setLocationError(`The region "${locations.region}" could not be found in "${locations.country}".`);
 
-        const countryResults = await searchNominatim(
-            locations.country,
-            5
-        );
+                setLocations((prev) => ({
+                    ...prev,
+                    latitude: "",
+                    longitude: "",
+                }));
 
-        const countryExists = countryResults.some((result) => {
-            return (
-                result.addresstype === "country" &&
-                result.address?.country
-            );
-        });
-
-        if (!countryExists) {
-            setLocationError(
-                `The country "${locations.country}" could not be found.`
-            );
-
-            setLocations((prev) => ({
-                ...prev,
-                latitude: "",
-                longitude: "",
-            }));
-
-            return;
-        }
-
-    
-
-        const regionResults = await searchNominatim(
-            `${locations.region}, ${locations.country}`,
-            5
-        );
-
-        const countryName = locations.country.toLowerCase();
-
-        const regionResult = regionResults.find((result) => {
-            const address = result.address;
-
-            if (!address?.country) {
-                return false;
+                return;
             }
 
-            return (
-                address.country.toLowerCase() === countryName
-            );
-        });
+            const exactResults = await searchNominatim(`${locations.name}, ${locations.region}, ${locations.country}`, 5);
 
-        if (!regionResult) {
-            setLocationError(
-                `The region "${locations.region}" could not be found in "${locations.country}".`
-            );
+            const exactResult = exactResults.find((result) => {
+                const address = result.address;
 
-            setLocations((prev) => ({
-                ...prev,
-                latitude: "",
-                longitude: "",
-            }));
+                if (!address?.country) {
+                    return false;
+                }
 
-            return;
-        }
+                return address.country.toLowerCase() === countryName;
+            });
 
-       
+            if (exactResult) {
+                setLocations((prev) => ({
+                    ...prev,
+                    latitude: exactResult.lat,
+                    longitude: exactResult.lon,
+                }));
 
-        const exactResults = await searchNominatim(
-            `${locations.name}, ${locations.region}, ${locations.country}`,
-            5
-        );
+                setMessage("Location found. Exact coordinates have been added.");
 
-        const exactResult = exactResults.find((result) => {
-            const address = result.address;
-
-            if (!address?.country) {
-                return false;
+                return;
             }
 
-            return (
-                address.country.toLowerCase() === countryName
-            );
-        });
+            const nearbyResults = await searchNominatim(`${locations.name}, ${locations.region}`, 5);
 
-        if (exactResult) {
-            setLocations((prev) => ({
-                ...prev,
-                latitude: exactResult.lat,
-                longitude: exactResult.lon,
-            }));
+            const nearbyResult = nearbyResults.find((result) => {
+                const address = result.address;
 
-            setMessage(
-                "Location found. Exact coordinates have been added."
-            );
+                if (!address?.country) {
+                    return false;
+                }
 
-            return;
-        }
+                return address.country.toLowerCase() === countryName;
+            });
 
-      
+            if (nearbyResult) {
+                setLocations((prev) => ({
+                    ...prev,
+                    latitude: nearbyResult.lat,
+                    longitude: nearbyResult.lon,
+                }));
 
-        const nearbyResults = await searchNominatim(
-            `${locations.name}, ${locations.region}`,
-            5
-        );
+                setMessage(`"${locations.name}" was found nearby. Coordinates have been added.`);
 
-        const nearbyResult = nearbyResults.find((result) => {
-            const address = result.address;
-
-            if (!address?.country) {
-                return false;
+                return;
             }
-
-            return (
-                address.country.toLowerCase() === countryName
-            );
-        });
-
-        if (nearbyResult) {
             setLocations((prev) => ({
                 ...prev,
-                latitude: nearbyResult.lat,
-                longitude: nearbyResult.lon,
+                latitude: regionResult.lat,
+                longitude: regionResult.lon,
             }));
 
-            setMessage(
-                `"${locations.name}" was found nearby. Coordinates have been added.`
-            );
+            setLocationError(`"${locations.name}" was not found. Nearby coordinates based on "${locations.region}" have been provided.`);
+        } catch (error) {
+            console.error(error);
 
-            return;
+            setLocationError("Failed to find coordinates. Please try again.");
         }
-        setLocations((prev) => ({
-            ...prev,
-            latitude: regionResult.lat,
-            longitude: regionResult.lon,
-        }));
-
-        setLocationError(
-            `"${locations.name}" was not found. Nearby coordinates based on "${locations.region}" have been provided.`
-        );
-
-    } catch (error) {
-        console.error(error);
-
-        setLocationError(
-            "Failed to find coordinates. Please try again."
-        );
-    }
-};
+    };
 
     return (
         <div className="add-sharks-container">

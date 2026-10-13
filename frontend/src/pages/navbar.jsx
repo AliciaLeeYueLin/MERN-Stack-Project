@@ -37,7 +37,7 @@ const Navigation = () => {
                 if (response.data.role === "admin") {
                     setIsAdmin(true);
                 }
-               
+
                 if (response.data.role === "user") {
                     setIsUser(true);
                 }

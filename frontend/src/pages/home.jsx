@@ -120,15 +120,6 @@ function Home() {
         getFrequency();
     }, []);
 
-    const openInfo = async () => {
-        setShowUserInfo(true);
-    };
-
-    const handleClose = () => {
-        setShowUserInfo(false);
-    };
-
-    console.log("locations:", locations);
     return (
         <>
             <div className="home-page">

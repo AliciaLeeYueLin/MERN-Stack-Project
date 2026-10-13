@@ -138,23 +138,25 @@ function Approve() {
                     </div>
                 </div>
             ))}
-            <Modal show={showRejectConfirm !== null} onHide={() => setShowRejectConfirm(null)} centered>
-                <Modal.Header>
-                    <Modal.Title>Confirm Rejection</Modal.Title>
-                </Modal.Header>
+            {showRejectConfirm && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                        <h1>Confirmation Rejecetion</h1>
+                        <h3>Are you sure you want to reject this application?</h3>
 
-                <Modal.Body>Are you sure you want to reject this application?</Modal.Body>
+                        <button onClick={() => setShowRejectConfirm(false)}>Cancel</button>
 
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowRejectConfirm(null)}>
-                        Cancel
-                    </Button>
-
-                    <Button variant="danger" onClick={() => { handleReject(showRejectConfirm); setShowRejectConfirm(null);}}>
-                        Yes, Reject
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                        <button
+                            onClick={() => {
+                                handleReject(showRejectConfirm);
+                                setShowRejectConfirm(null);
+                            }}
+                        >
+                            Yes, Reject
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
