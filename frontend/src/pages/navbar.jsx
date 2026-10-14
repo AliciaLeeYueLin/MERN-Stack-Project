@@ -111,11 +111,21 @@ const Navigation = () => {
                         </NavLink>
                     </li>
 
-                    <li className="nav-item">
-                        <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/info">
-                            Info
-                        </NavLink>
-                    </li>
+                    {!isUser && (
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/info">
+                                Info
+                            </NavLink>
+                        </li>
+                    )}
+
+                    {isUser && (
+                        <li className="nav-item">
+                            <NavLink className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} to="/read-info">
+                                Info
+                            </NavLink>
+                        </li>
+                    )}
 
                     {isAdmin && (
                         <li className="nav-item">

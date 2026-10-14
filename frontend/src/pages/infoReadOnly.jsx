@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import Info from "../info/info";
-function InfoNavbar() {
-  <Info/>
+
+function InfoReadOnly() {
+    return (
+        <Info />
+    );
 }
 
-export default InfoNavbar;
+export default InfoReadOnly;

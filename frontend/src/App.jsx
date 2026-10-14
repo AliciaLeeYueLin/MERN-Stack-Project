@@ -4,7 +4,6 @@ import Login from "./pages/login";
 import Home from "./pages/home";
 import Shark from "./pages/shark";
 import Location from "./pages/location";
-import Info from "./info/info";
 import Sighting from "./pages/sighting";
 import ProtectedRoute from "./component/protectedRoutes";
 import "./App.css";
@@ -20,6 +19,7 @@ import SharkDetail from "./shark/sharkDetails";
 import InfoNavbar from "./pages/infoNavbar";
 import Habitats from "./habitat/habitat";
 import ScrollToTop from "./component/scrollToTop";
+import InfoReadOnly from "./pages/infoReadOnly"
 
 function App() {
     return (
@@ -42,6 +42,7 @@ function App() {
                             <Route path="/location/add" element={<NewLocation />} />
                             <Route path="/request" element={<Approve />} />
                             <Route path="/info" element={<InfoNavbar />} />
+                            <Route path="/read-info" element={<InfoReadOnly />} />
                             <Route path="/info-edit" element={<InfoNavbar />} />
                             <Route path="/add-new-info" element={<InfoNavbar />} />
                             <Route path="/sighting" element={<Sighting />} />
