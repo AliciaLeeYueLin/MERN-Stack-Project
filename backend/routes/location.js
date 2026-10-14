@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const auth = require("../middleware/auth");
 const Location = require("../models/Location");
+const Sighting = require("../models/Sighting");
 
 router.get("/locations", auth.authenticate, async (req, res) => {
     try {
@@ -14,7 +15,7 @@ router.get("/locations", auth.authenticate, async (req, res) => {
     }
 });
 
-router.post("/location", auth.authenticate,auth.noUserOnly, async (req, res) => {
+router.post("/location", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const { name, country, region, description, latitude, longitude } = req.body;
         const newLocation = new Location({
@@ -35,7 +36,7 @@ router.post("/location", auth.authenticate,auth.noUserOnly, async (req, res) => 
     }
 });
 
-router.post("/location/bulk", auth.authenticate,auth.noUserOnly, async (req, res) => {
+router.post("/location/bulk", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const locations = await Location.insertMany(req.body);
 
@@ -45,14 +46,11 @@ router.post("/location/bulk", auth.authenticate,auth.noUserOnly, async (req, res
     }
 });
 
-router.patch("/location/:id", auth.authenticate,auth.noUserOnly, async (req, res) => {
+router.patch("/location/:id", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
-        const updateLocation = await Location.findByIdAndUpdate(
-            req.params.id, req.body, 
-            {
-                 new: true 
-            }
-            );
+        const updateLocation = await Location.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+        });
 
         res.json(updateLocation);
     } catch (error) {
@@ -60,13 +58,35 @@ router.patch("/location/:id", auth.authenticate,auth.noUserOnly, async (req, res
     }
 });
 
+// router.delete("/location/:id", auth.authenticate, auth.noUserOnly, async (req, res) => {
+//     try {
+//         const deletedLocation = await Location.findByIdAndDelete(req.params.id);
+
+//         res.json(deletedLocation);
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// });
+
 router.delete("/location/:id", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
-        const deletedLocation = await Location.findByIdAndDelete(req.params.id);
+        const { id } = req.params;
 
-        res.json(deletedLocation);
+        const sightingUsedLocation = await Sighting.findOne({ locationId: id });
+
+        if (sightingUsedLocation) {
+            return res.status(400).json({ error: `Cannot delete this habitat because it is being used by ${sightingUsedLocation.name}.` });
+        }
+
+        const deletedLocation = await Location.findByIdAndDelete(id);
+
+        res.json({
+            message: "Location deleted successfully.",
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({
+            error: error.message,
+        });
     }
 });
 

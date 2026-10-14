@@ -139,13 +139,6 @@ function Sharks() {
             </div>
 
             {error && <div className="error-message">{error}</div>}
-
-            <div className="filters-container">
-                <div className="search-wrapper">
-                    <input type="text" placeholder="Search shark..." value={search} onChange={(e) => setSearch(e.target.value)} className="filter-input" />
-                </div>
-            </div>
-
             <div className="sort-container">
                 <div className="select-group">
                     <select className="filter-select" value={diet} onChange={(e) => setDiet(e.target.value)}>
@@ -172,6 +165,13 @@ function Sharks() {
                     </select>
                 </div>
             </div>
+            
+            <div className="filters-container">
+                <div className="search-wrapper">
+                    <input type="text" placeholder="Search shark..." value={search} onChange={(e) => setSearch(e.target.value)} className="filter-input" />
+                </div>
+            </div>
+
             {sharks.length === 0 ? (
                 <h2 className="no-shark">No shark founded...</h2>
             ) : (

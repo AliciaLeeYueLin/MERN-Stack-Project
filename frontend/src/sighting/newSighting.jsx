@@ -105,13 +105,15 @@ function NewSighting() {
                 navigate("/sighting");
             }, 1000);
         } catch (error) {
+            console.error("Error adding sighting:", error.response?.data || error);
+
             if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                 localStorage.removeItem("jwt_token");
                 navigate("/");
                 return;
             }
 
-            setError("Failed to add sighting.");
+            setError(error.response?.data?.error || "Failed to add sighting.");
         }
     };
 
@@ -157,7 +159,7 @@ function NewSighting() {
 
                         <input type="date" name="date" value={sightings.date} onChange={handleChange} max={new Date().toLocaleDateString("en-CA")} required />
                     </div>
-                    
+
                     <div className="form-group">
                         <label>Description</label>
 

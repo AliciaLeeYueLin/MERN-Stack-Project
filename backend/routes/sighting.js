@@ -57,7 +57,7 @@ router.get("/sighting/:id", async (req, res) => {
     }
 });
 
-router.post("/sighting", auth.noUserOnly,async (req, res) => {
+router.post("/sighting",auth.authenticate, auth.noUserOnly,async (req, res) => {
     try {
         const { sharkId, locationId, description, date, waterDepth, waterTemperature, weatherCondition, visibility, sharkCount, behavior, observer, notes } = req.body;
 
@@ -86,7 +86,7 @@ router.post("/sighting", auth.noUserOnly,async (req, res) => {
     }
 });
 
-router.post("/bulk", auth.authenticate,auth.noUserOnly, async (req, res) => {
+router.post("/bulk", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const sightings = await Sighting.insertMany(req.body);
 

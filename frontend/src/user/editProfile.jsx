@@ -39,7 +39,7 @@ function EditProfile({ users, onClose, onUpdated }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
+           
             setMessage("Profile updated successfully! Pls reload the page to update your profile");
 
             onUpdated(response.data.user || response.data);
@@ -82,7 +82,7 @@ function EditProfile({ users, onClose, onUpdated }) {
                     )}
                 </div>
 
-                <button type="submit">Update User</button>
+                <button type="submit">Update Profile</button>
 
                 <button className="cancel-update" type="button" onClick={onClose}>
                     Cancel
