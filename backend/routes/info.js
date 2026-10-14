@@ -62,7 +62,7 @@ router.get("/info/:id", auth.authenticate, async (req, res) => {
     }
 });
 
-router.post("/info", auth.authenticate, async (req, res) => {
+router.post("/info", auth.authenticate, upload.single("image"), async (req, res) => {
     try {
         if (req.user.role !== "admin" && req.user.role !== "researcher") {
             return res.status(403).json({
@@ -70,15 +70,15 @@ router.post("/info", auth.authenticate, async (req, res) => {
             });
         }
 
-        const { sharkId, title, description, imageUrl, isPublic } = req.body;
+        const { sharkId, title, description, isPublic } = req.body;
 
         const info = new Info({
             userId: req.user._id,
             sharkId,
             title,
             description,
-            imageUrl,
-            isPublic,
+            imageUrl: req.file ? `/uploads/${req.file.filename}` : "",
+            isPublic: isPublic === undefined ? true : isPublic === "true",
         });
 
         await info.save();

@@ -147,11 +147,11 @@ function ResearcherForm({ onClose, show }) {
             {showConfirm && (
                 <div className="edit-modal-overlay">
                     <div className="edit-modal">
-                        <h1>Confirmation Deletion</h1>
+                        <h1>Confirmation Submission</h1>
                         <h3>Are you sure you want to submit this form?</h3>
                         <p>The form cannot be edit, delete or submit again.</p>
                         <button onClick={() => setShowConfirm(false)}>Cancel</button>
-                        <button onClick={handleApply}>Yes, Submit</button>{" "}
+                        <button className="cancel-update" onClick={handleApply}>Yes, Submit</button>{" "}
                     </div>
                 </div>
             )}

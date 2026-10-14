@@ -121,56 +121,38 @@ router.patch("/sighting/:id", auth.authenticate, async (req, res) => {
 
 router.get("/frequency", auth.authenticate, async (req, res) => {
     try {
-        const frequency = await Sighting.aggregate([
-            {
-                $group: {
-                    _id: {
-                        sharkId: "$sharkId",
-                        locationId: "$locationId",
-                    },
-                    frequency: {
-                        $sum: 1,
-                    },
-                },
-            },
+        const sightings = await Sighting.find()
+            .populate("sharkId")
+            .populate("locationId");
 
-            {
-                $lookup: {
-                    from: "sharks",
-                    localField: "_id.sharkId",
-                    foreignField: "_id",
-                    as: "shark",
-                },
-            },
+        const frequency = [];
 
-            {
-                $lookup: {
-                    from: "locations",
-                    localField: "_id.locationId",
-                    foreignField: "_id",
-                    as: "location",
-                },
-            },
+        sightings.forEach((sighting) => {
+            const shark = sighting.sharkId;
+            const location = sighting.locationId;
 
-            {
-                $unwind: "$shark",
-            },
+            if (!shark || !location) {
+                return;
+            }
 
-            {
-                $unwind: "$location",
-            },
+            const existing = frequency.find(
+                (item) =>
+                    item.sharkId.toString() === shark._id.toString() &&
+                    item.locationId.toString() === location._id.toString()
+            );
 
-            {
-                $project: {
-                    _id: 0,
-                    sharkId: "$shark._id",
-                    sharkName: "$shark.name",
-                    locationId: "$location._id",
-                    locationName: "$location.name",
+            if (existing) {
+                existing.frequency++;
+            } else {
+                frequency.push({
+                    sharkId: shark._id,
+                    sharkName: shark.name,
+                    locationId: location._id,
+                    locationName: location.name,
                     frequency: 1,
-                },
-            },
-        ]);
+                });
+            }
+        });
 
         res.json(frequency);
     } catch (error) {

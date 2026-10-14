@@ -80,7 +80,7 @@ function EditLocation({ location, onClose, onUpdated, onDeleted }) {
             if (error.response?.status === 404) {
                 setError("Location not found.");
             } else {
-                setError("Failed to update info.");
+                setError("Failed to update location.");
             }
         }
     };

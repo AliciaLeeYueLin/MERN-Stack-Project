@@ -7,11 +7,11 @@ function NewInfo() {
     const navigate = useNavigate();
 
     const [information, setInformation] = useState({
-        name: "",
         sharkId: "",
         title: "",
         description: "",
-        imageUrl: "",
+        image: null,
+        isPublic: true,
     });
 
     const [user, setUser] = useState(null);
@@ -21,11 +21,11 @@ function NewInfo() {
     const [message, setMessage] = useState("");
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value, type, checked, files } = e.target;
 
         setInformation({
             ...information,
-            [name]: type === "checkbox" ? checked : value,
+            [name]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
         });
     };
 
@@ -40,8 +40,19 @@ function NewInfo() {
             return;
         }
 
+        const formData = new FormData();
+
+        formData.append("sharkId", information.sharkId);
+        formData.append("title", information.title);
+        formData.append("description", information.description);
+        formData.append("isPublic", information.isPublic);
+
+        if (information.image) {
+            formData.append("image", information.image);
+        }
+
         try {
-            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/info/info/`, information, {
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/info/info/`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -50,7 +61,7 @@ function NewInfo() {
             setMessage("Info added successfully.");
 
             setTimeout(() => {
-                navigate("/info");
+                navigate("/info-edit");
             }, 1000);
         } catch (error) {
             if (error.response && (error.response.status === 401 || error.response.status === 403)) {
@@ -174,9 +185,9 @@ function NewInfo() {
                     </div>
 
                     <div className="form-group">
-                        <label>Image Url</label>
+                        <label>Image</label>
 
-                        <input type="text" name="imageUrl" value={information.imageUrl} onChange={handleChange} />
+                        <input type="file" name="image" accept="image/*" onChange={handleChange} />
                     </div>
 
                     <div className="button-group">

@@ -139,6 +139,11 @@
     overflow-wrap: anywhere;
     word-break: break-word;
 }
+.no-info {
+    color: white !important;
+    display: flex !important;
+    justify-content: center !important;
+}
 
 .info-content button {
     margin: 8px 16px;
@@ -181,6 +186,7 @@
     display: flex;
     align-items: flex-start;
     min-height: 100vh;
+
 }
 
 .info-layout {
@@ -202,6 +208,7 @@
     flex-direction: column;
     gap: 4px;
     box-shadow: 4px 0 14px rgba(124, 63, 29, 0.18);
+    
 }
 
 .sidenav-brand {

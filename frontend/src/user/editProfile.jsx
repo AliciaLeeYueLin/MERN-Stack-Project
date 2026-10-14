@@ -40,7 +40,7 @@ function EditProfile({ users, onClose, onUpdated }) {
                 },
             });
 
-            setMessage("Profile updated successfully!");
+            setMessage("Profile updated successfully! Pls reload the page to update your profile");
 
             onUpdated(response.data.user || response.data);
 
@@ -84,7 +84,7 @@ function EditProfile({ users, onClose, onUpdated }) {
 
                 <button type="submit">Update User</button>
 
-                <button type="button" onClick={onClose}>
+                <button className="cancel-update" type="button" onClick={onClose}>
                     Cancel
                 </button>
             </form>

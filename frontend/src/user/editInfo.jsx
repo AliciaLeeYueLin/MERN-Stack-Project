@@ -90,7 +90,7 @@ function EditInfo({ users, onClose, onUpdated }) {
 
                 <button type="submit">Update User</button>
 
-                <button type="button" onClick={onClose}>
+                <button className="cancel-update" type="button" onClick={onClose}>
                     Cancel
                 </button>
             </form>

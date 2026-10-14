@@ -160,6 +160,17 @@ body,
     gap: 20px;
 }
 
+.sort-container {
+    max-width: 1100px;
+    margin: 0 auto 30px;
+    padding: 0 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
 .search-wrapper {
     flex: 1;
 }

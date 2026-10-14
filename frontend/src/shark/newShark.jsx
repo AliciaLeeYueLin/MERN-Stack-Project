@@ -223,7 +223,6 @@ function NewShark() {
 
                 setHabitats(response.data);
             } catch (error) {
-                console.log("GET HABITATS ERROR:", error);
 
                 if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                     localStorage.removeItem("jwt_token");

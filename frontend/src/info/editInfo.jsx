@@ -204,7 +204,7 @@ function EditInfo() {
             {error && <p className="error">{error}</p>}
             {message && <p className="message">{message}</p>}
 
-            {info.length === 0 && !error && <p>You have not added any info yet.</p>}
+            {info.length === 0 && !error && <h3 className="no-info">You have not added any info yet.</h3>}
 
             <div className="info-grid">
                 {info.map((i) => (

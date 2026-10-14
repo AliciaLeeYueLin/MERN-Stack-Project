@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Alert } from "@mui/material";
 import EditProfile from "./editProfile";
 import ResearcherForm from "./researcherForm";
 import EditInfo from "./editInfo";
@@ -13,7 +14,7 @@ function UserInfo({ onClose }) {
     const [form, setForm] = useState(false);
     const [userInfo, setUserInfo] = useState(true);
     const [application, setApplication] = useState(null);
-    const [showMessage, setShowMessage] = useState(true);
+    const [showMessage, setShowMessage] = useState(localStorage.getItem("rejectionMessageDismissed") !== "true");
 
     const navigate = useNavigate();
 
@@ -132,26 +133,22 @@ function UserInfo({ onClose }) {
                                     </button>
                                 </div>
 
-                                {/* <div className="user-details">
-                                    <div className="user-detail-item">
-                                        <span className="user-detail-label">Email address</span>
-                                        <span className="user-detail-value">{users.email}</span>
-                                    </div>
-
-                                    <div className="user-detail-item">
-                                        <span className="user-detail-label">Account role</span>
-                                        <span className="user-detail-value">{users.role}</span>
-                                    </div>
-                                </div> */}
-
-                                {users.role === "user" && !application && <button onClick={openForm}>Apply as a Researcher!</button>}
+                                {users.role === "user" && !application && <button className="apply-button" onClick={openForm}>Apply as a Researcher!</button>}
 
                                 {application?.status === "rejected" && showMessage && (
                                     <div className="rejected-message">
-                                        <h4>Sorry, your Application has been rejected </h4>
-                                        <button className="close" onClick={() => setShowMessage(false)}>
-                                            X
-                                        </button>
+                                        <Alert severity="warning">
+                                            Sorry, your Application has been rejected{" "}
+                                            <button
+                                                className="close"
+                                                onClick={() => {
+                                                    setShowMessage(false);
+                                                    localStorage.setItem("rejectionMessageDismissed", "true");
+                                                }}
+                                            >
+                                                X
+                                            </button>
+                                        </Alert>
                                     </div>
                                 )}
 

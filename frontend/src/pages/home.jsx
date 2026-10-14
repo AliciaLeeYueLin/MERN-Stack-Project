@@ -142,7 +142,7 @@ function Home() {
                             center={[4.2105, 101.9758]}
                             zoom={3}
                             minZoom={3}
-                            maxZoom={3}
+                            maxZoom={5}
                             maxBounds={[
                                 [-90, -180],
                                 [90, 180],

@@ -81,11 +81,9 @@ function Habitats() {
 
         try {
             const response = await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/habitat/habitat`,
-                {
+                `${import.meta.env.VITE_API_BASE_URL}/habitat/habitat`,{
                     name: newHabitat,
-                },
-                {
+                },{
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

@@ -109,10 +109,7 @@ function EditShark({ shark, onClose, onUpdated }) {
     };
 
     const addCharacteristic = () => {
-        setSharks({
-            ...sharks,
-            characteristics: [
-                ...sharks.characteristics,
+        setSharks({...sharks, characteristics: [...sharks.characteristics,
                 {
                     characteristic: "",
                     description: "",

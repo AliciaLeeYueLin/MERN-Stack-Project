@@ -37,7 +37,7 @@ function Info() {
                     return;
                 }
 
-                setError("Failed to load your info.");
+                setError("Failed to load your user.");
             }
         };
 
@@ -48,8 +48,6 @@ function Info() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
-                console.log("INFO DATA:", response.data);
 
                 setInfo(response.data);
             } catch (error) {

@@ -32,7 +32,7 @@ function Login() {
             navigate("/home");
         } catch (error) {
             if (error.response) {
-                setError(error.response.data.message || "Login failed.");
+                setError(error.response.data.message || "Login failed. Username/password incorrect");
             } else {
                 setError("Unable to connect to the server.");
             }
