@@ -62,7 +62,7 @@ router.get("/info/:id", auth.authenticate, async (req, res) => {
     }
 });
 
-router.post("/info", auth.authenticate, upload.single("image"), async (req, res) => {
+router.post("/info", auth.authenticate, auth.noUserOnly, upload.single("image"), async (req, res) => {
     try {
         if (req.user.role !== "admin" && req.user.role !== "researcher") {
             return res.status(403).json({
@@ -91,7 +91,7 @@ router.post("/info", auth.authenticate, upload.single("image"), async (req, res)
     }
 });
 
-router.post("/info/bulk", auth.authenticate, async (req, res) => {
+router.post("/info/bulk", auth.authenticate, auth.noUserOnly,async (req, res) => {
     try {
         const bulkInfo = await Info.insertMany(req.body);
 
@@ -101,7 +101,7 @@ router.post("/info/bulk", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/info/:id", auth.authenticate, upload.single("image"), async (req, res) => {
+router.patch("/info/:id", auth.authenticate,auth.noUserOnly, upload.single("image"), async (req, res) => {
     try {
         const existingInfo = await Info.findById(req.params.id);
 
@@ -156,7 +156,7 @@ router.patch("/info/:id", auth.authenticate, upload.single("image"), async (req,
     }
 });
 
-router.delete("/info/:id", auth.authenticate, async (req, res) => {
+router.delete("/info/:id", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const deleteInfo = await Info.findByIdAndDelete(req.params.id);
 

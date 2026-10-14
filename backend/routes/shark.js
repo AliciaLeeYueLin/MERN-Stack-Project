@@ -64,7 +64,7 @@ router.get("/sharks/:id", auth.authenticate, async (req, res) => {
     }
 });
 
-router.post("/shark", auth.authenticate, upload.single("image"), async (req, res) => {
+router.post("/shark", auth.authenticate, auth.noUserOnly, upload.single("image"), async (req, res) => {
     try {
         const { name, scientificName, description, averageSize, diet, dietDetails, habitatId, habitatDetails, reproduction, lifeCycle, characteristics } = req.body;
 
@@ -97,7 +97,7 @@ router.post("/shark", auth.authenticate, upload.single("image"), async (req, res
     }
 });
 
-router.post("/shark/bulk", auth.authenticate, async (req, res) => {
+router.post("/shark/bulk", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const sharks = await Shark.insertMany(req.body);
 
@@ -107,7 +107,7 @@ router.post("/shark/bulk", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/sharks/:id", auth.authenticate, upload.single("image"), async (req, res) => {
+router.patch("/sharks/:id", auth.authenticate, auth.noUserOnly, upload.single("image"), async (req, res) => {
     try {
         const updateData = {
             ...req.body,
@@ -149,7 +149,7 @@ router.patch("/sharks/:id", auth.authenticate, upload.single("image"), async (re
     }
 });
 
-router.patch("/shark/bulk", auth.authenticate, async (req, res) => {
+router.patch("/shark/bulk", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const sharks = req.body;
 
@@ -186,7 +186,7 @@ router.patch("/shark/bulk", auth.authenticate, async (req, res) => {
     }
 });
 
-router.delete("/shark/:id", auth.authenticate, async (req, res) => {
+router.delete("/shark/:id", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const deleteShark = await Shark.findByIdAndDelete(req.params.id);
 

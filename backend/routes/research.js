@@ -13,37 +13,25 @@ router.post("/request", auth.authenticate, async (req, res) => {
 
         if (!userId) {
             return res.status(401).json({
-                message: "User authentication failed."
+                message: "User authentication failed.",
             });
         }
 
         const existingApplication = await Research.findOne({
-            userId: userId
+            userId: userId,
         });
 
         if (existingApplication) {
             return res.status(409).json({
-                message: "You have already submitted a researcher application. You cannot apply again."
+                message: "You have already submitted a researcher application. You cannot apply again.",
             });
         }
 
-        const {
-            organization,
-            researchField,
-            qualification,
-            experience,
-            reason
-        } = req.body;
+        const { organization, researchField, qualification, experience, reason } = req.body;
 
-        if (
-            !organization ||
-            !researchField ||
-            !qualification ||
-            !experience ||
-            !reason
-        ) {
+        if (!organization || !researchField || !qualification || !experience || !reason) {
             return res.status(400).json({
-                message: "Please complete all required fields."
+                message: "Please complete all required fields.",
             });
         }
 
@@ -55,27 +43,26 @@ router.post("/request", auth.authenticate, async (req, res) => {
             qualification: qualification,
             experience: experience,
             reason: reason,
-            status: "pending"
+            status: "pending",
         });
 
         await application.save();
 
         return res.status(201).json({
             message: "Researcher application submitted successfully.",
-            application: application
+            application: application,
         });
-
     } catch (error) {
         console.error("Research application error:", error);
 
         if (error.code === 11000) {
             return res.status(409).json({
-                message: "You have already submitted a researcher application."
+                message: "You have already submitted a researcher application.",
             });
         }
 
         return res.status(500).json({
-            message: "Failed to submit researcher application."
+            message: "Failed to submit researcher application.",
         });
     }
 });

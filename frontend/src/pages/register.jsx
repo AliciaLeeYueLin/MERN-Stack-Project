@@ -46,29 +46,29 @@ function Register() {
     return (
         <div className="login-container">
             <div className="login-card">
-                <h1>Register</h1>
+                <div className="register-heading">
+                    <h1>Explore More About Sharks</h1>
+                    <p>Join the Shark Research Community</p>
+                    <p>Discover shark species, sightings, and habitats around the world.</p>
+                </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="name">Name</label>
-
-                        <input type="name" id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your Name" required />
+                        <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your Name" required />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
-
                         <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your Email" required />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-
                         <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required />
                     </div>
 
                     {error && <div className="error-message">{error}</div>}
-
                     {message && <div className="success-message">{message}</div>}
 
                     <button type="submit" className="login-button">

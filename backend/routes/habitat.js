@@ -28,7 +28,7 @@ router.get("/habitat/:id", auth.authenticate, async (req, res) => {
     }
 });
 
-router.post("/habitat", auth.authenticate, async (req, res) => {
+router.post("/habitat", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const { name } = req.body;
 
@@ -44,7 +44,7 @@ router.post("/habitat", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/habitat/:id", auth.authenticate, async (req, res) => {
+router.patch("/habitat/:id", auth.authenticate,auth.noUserOnly, async (req, res) => {
        try {
         const updateHabitat = await Habitat.findByIdAndUpdate(
             req.params.id, req.body, 
@@ -59,7 +59,7 @@ router.patch("/habitat/:id", auth.authenticate, async (req, res) => {
     }
 });
 
-router.delete("/habitat/:id", auth.authenticate, async (req, res) => {
+router.delete("/habitat/:id", auth.authenticate,auth.noUserOnly, async (req, res) => {
     try {
         const { id } = req.params;
 

@@ -57,7 +57,7 @@ router.get("/sighting/:id", async (req, res) => {
     }
 });
 
-router.post("/sighting", async (req, res) => {
+router.post("/sighting", auth.noUserOnly,async (req, res) => {
     try {
         const { sharkId, locationId, description, date, waterDepth, waterTemperature, weatherCondition, visibility, sharkCount, behavior, observer, notes } = req.body;
 
@@ -86,7 +86,7 @@ router.post("/sighting", async (req, res) => {
     }
 });
 
-router.post("/bulk", auth.authenticate, async (req, res) => {
+router.post("/bulk", auth.authenticate,auth.noUserOnly, async (req, res) => {
     try {
         const sightings = await Sighting.insertMany(req.body);
 
@@ -98,7 +98,7 @@ router.post("/bulk", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/sighting/:id", auth.authenticate, async (req, res) => {
+router.patch("/sighting/:id", auth.authenticate,auth.noUserOnly, async (req, res) => {
     try {
         const updatedSighting = await Sighting.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
@@ -162,7 +162,7 @@ router.get("/frequency", auth.authenticate, async (req, res) => {
     }
 });
 
-router.delete("/sightings", auth.authenticate, async (req, res) => {
+router.delete("/sightings", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const deleteSighting = await Sighting.deleteMany({});
 
@@ -180,7 +180,7 @@ router.delete("/sightings", auth.authenticate, async (req, res) => {
     }
 });
 
-router.delete("/sighting/:id", auth.authenticate, async (req, res) => {
+router.delete("/sighting/:id", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const deleteSighting = await Sighting.findByIdAndDelete(req.params.id);
 

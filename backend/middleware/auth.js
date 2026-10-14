@@ -26,3 +26,13 @@ exports.adminOnly = (req, res, next) => {
 
     next();
 };
+
+exports.noUserOnly = (req, res, next) => {
+    if (req.user.role == "user") {
+        return res.status(403).json({
+            error: "Admin/ researcher access required",
+        });
+    }
+
+    next();
+};

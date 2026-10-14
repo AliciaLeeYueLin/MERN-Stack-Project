@@ -182,6 +182,7 @@ function Home() {
                             ))}
                         </MapContainer>
                     </div>
+                    <button className="view"><a href="/location">View Location detail →</a></button>
                 </section>
 
                 <section className="shark-section">

@@ -26,6 +26,29 @@ body,
     flex-direction: column;
 }
 
+.register-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.register-heading h1 {
+    font-size: 28px;
+    color: #082f49;
+    margin-bottom: 10px;
+}
+
+.register-heading p:first-of-type {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0369a1;
+}
+
+.register-heading p:last-of-type {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
 .main-content {
     flex: 1;
 }
@@ -555,13 +578,13 @@ body,
 }
 
 .show {
-    padding: 10px 20px;
+   padding: 10px 20px;
     border: none;
     border-radius: 8px;
     background-color: #000b3e;
     color: white;
     font-size: 15px;
-    transition: 0.2s;
+    transition: 0.2s; 
 }
 
 .remove {

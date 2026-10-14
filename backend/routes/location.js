@@ -14,7 +14,7 @@ router.get("/locations", auth.authenticate, async (req, res) => {
     }
 });
 
-router.post("/location", auth.authenticate, async (req, res) => {
+router.post("/location", auth.authenticate,auth.noUserOnly, async (req, res) => {
     try {
         const { name, country, region, description, latitude, longitude } = req.body;
         const newLocation = new Location({
@@ -35,7 +35,7 @@ router.post("/location", auth.authenticate, async (req, res) => {
     }
 });
 
-router.post("/location/bulk", auth.authenticate, async (req, res) => {
+router.post("/location/bulk", auth.authenticate,auth.noUserOnly, async (req, res) => {
     try {
         const locations = await Location.insertMany(req.body);
 
@@ -45,7 +45,7 @@ router.post("/location/bulk", auth.authenticate, async (req, res) => {
     }
 });
 
-router.patch("/location/:id", auth.authenticate, async (req, res) => {
+router.patch("/location/:id", auth.authenticate,auth.noUserOnly, async (req, res) => {
     try {
         const updateLocation = await Location.findByIdAndUpdate(
             req.params.id, req.body, 
@@ -60,7 +60,7 @@ router.patch("/location/:id", auth.authenticate, async (req, res) => {
     }
 });
 
-router.delete("/location/:id", auth.authenticate, async (req, res) => {
+router.delete("/location/:id", auth.authenticate, auth.noUserOnly, async (req, res) => {
     try {
         const deletedLocation = await Location.findByIdAndDelete(req.params.id);
 
